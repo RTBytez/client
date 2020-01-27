@@ -1,0 +1,34 @@
+<idea-plugin>
+    <id>client</id>
+    <name>RTBytez</name>
+    <version>1.0</version>
+    <vendor email="N/A" url="https://github.com/RTBytez">RTBytez</vendor>
+
+    <description>
+        RTBytes client - A JetBrains Plugin that allows Real-Time Collaboration
+    </description>
+
+    <change-notes>
+        Under Development - Not for production use.
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="com.rtbytez.client.DummyAction" class="com.rtbytez.client.DummyAction" text="Dummy Action"
+                description="A dummy action that does dummy things">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
+
+</idea-plugin>
