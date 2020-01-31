@@ -25,6 +25,10 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action id="com.rtbytez.DummyAction" class="com.rtbytez.DummyAction" text="Dummy Action"
+                description="A dummy action that does dummy things">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
     </actions>
 
 </idea-plugin>
