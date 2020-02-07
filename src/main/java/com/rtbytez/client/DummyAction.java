@@ -1,4 +1,4 @@
-package com.rtbytez;
+package com.rtbytez.client;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
