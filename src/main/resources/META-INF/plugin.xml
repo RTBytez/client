@@ -29,6 +29,9 @@
                 description="A dummy action that does dummy things">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
+        <action id="com.rtbytez.Connect" class="com.rtbytez.Connect" text="Connect">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
     </actions>
 
 </idea-plugin>
