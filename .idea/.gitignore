@@ -1,2 +1,5 @@
 # Default ignored files
 /workspace.xml
+/libraries/
+misc.xml
+gradle.xml
