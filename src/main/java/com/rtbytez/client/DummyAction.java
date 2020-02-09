@@ -8,6 +8,6 @@ public class DummyAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        //This is a dummy
+        // This is a dummy
     }
 }

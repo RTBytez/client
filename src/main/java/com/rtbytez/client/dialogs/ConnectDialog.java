@@ -14,7 +14,6 @@ public class ConnectDialog extends DialogWrapper {
         super(true);
         init();
         setTitle("Connect to RTBytez Server");
-
     }
 
     @Nullable
