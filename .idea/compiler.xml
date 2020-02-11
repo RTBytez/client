@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="client-gradle.main" target="1.8" />
       <module name="client-gradle.test" target="1.8" />
+      <module name="client.main" target="1.8" />
+      <module name="client.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
