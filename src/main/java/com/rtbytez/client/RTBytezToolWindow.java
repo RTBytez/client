@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.impl.ActionButton;
 import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 public class RTBytezToolWindow {
 
@@ -22,7 +21,9 @@ public class RTBytezToolWindow {
     }
 
     private void createUIComponents() {
-        actionButton1.addNotify();
+        addConnectionButton.addActionListener(event -> {
+            // Template for wake
+        });
     }
     public void onAddConnectionButtonClick(){
         Connect currConnection = new Connect();
