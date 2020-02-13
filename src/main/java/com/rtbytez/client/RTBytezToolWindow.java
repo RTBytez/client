@@ -4,11 +4,12 @@ import com.intellij.openapi.actionSystem.impl.ActionButton;
 import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class RTBytezToolWindow {
 
     private JPanel rTBytezToolWindowContent;
-    private JButton button1;
+    private JButton addConnectionButton;
     private ActionButton actionButton1;
     private JButton toggle;
 
@@ -23,4 +24,10 @@ public class RTBytezToolWindow {
     private void createUIComponents() {
         actionButton1.addNotify();
     }
+    public void onAddConnectionButtonClick(){
+        Connect currConnection = new Connect();
+        currConnection.actionPerformed(null);
+
+    }
 }
+

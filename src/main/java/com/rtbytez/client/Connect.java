@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class Connect extends AnAction {
 
     @Override
-    public void actionPerformed(@NotNull AnActionEvent event) {
+    public void actionPerformed(AnActionEvent event) {
 
         ConnectDialog dialog = new ConnectDialog();
         boolean ok = dialog.showAndGet(); // Hangs
