@@ -25,7 +25,8 @@ public class RTBytezToolWindow {
             // Template for wake
         });
     }
-    public void onAddConnectionButtonClick(){
+
+    public void onAddConnectionButtonClick() {
         Connect currConnection = new Connect();
         currConnection.actionPerformed(null);
 
