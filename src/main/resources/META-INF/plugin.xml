@@ -20,7 +20,8 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow id="RTBytez" secondary="true" anchor="right"
+                    factoryClass="com.rtbytez.client.RTBytezToolWindowFactory"/>
     </extensions>
 
     <actions>
