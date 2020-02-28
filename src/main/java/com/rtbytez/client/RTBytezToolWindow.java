@@ -11,25 +11,24 @@ public class RTBytezToolWindow {
     private JButton addConnectionButton;
     private ActionButton actionButton1;
     private JButton toggle;
+    static boolean foo = false;
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
 
     }
 
     public JPanel getContent() {
+        addConnectionButton.addActionListener(event -> {
+            onAddConnectionButtonClick();
+        });
         return rTBytezToolWindowContent;
     }
 
-    private void createUIComponents() {
-        addConnectionButton.addActionListener(event -> {
-            // Template for wake
-        });
-    }
+
 
     public void onAddConnectionButtonClick() {
-        Connect currConnection = new Connect();
-        currConnection.actionPerformed(null);
-
+        URIGetter currConnection = new URIGetter();
+        System.out.println(currConnection.retrieveURI());
     }
 }
 
