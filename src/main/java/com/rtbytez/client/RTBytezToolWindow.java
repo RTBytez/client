@@ -1,34 +1,38 @@
 package com.rtbytez.client;
 
-import com.intellij.openapi.actionSystem.impl.ActionButton;
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
 public class RTBytezToolWindow {
 
     private JPanel rTBytezToolWindowContent;
-    private JButton addConnectionButton;
-    private ActionButton actionButton1;
-    private JButton toggle;
-    static boolean foo = false;
+    private JPanel actionToolbarPanel;
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
 
     }
 
     public JPanel getContent() {
-        addConnectionButton.addActionListener(event -> {
-            onAddConnectionButtonClick();
-        });
         return rTBytezToolWindowContent;
     }
 
+    private void createUIComponents() {
+        ActionGroup group = new DefaultActionGroup(
+                new AnAction("Connect", "Connect to RTBytez Server", AllIcons.Actions.Execute) {
+                    @Override
+                    public void actionPerformed(@NotNull AnActionEvent e) {
 
-
-    public void onAddConnectionButtonClick() {
-        URIGetter currConnection = new URIGetter();
-        System.out.println(currConnection.retrieveURI());
+                    }
+                }
+        );
+        ActionManager actionManager = ActionManager.getInstance();
+        ActionToolbar actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, group, false);
+        actionToolbarPanel = new JPanel();
+        actionToolbarPanel.add(actionToolbar.getComponent());
     }
 }
 
