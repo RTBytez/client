@@ -87,9 +87,10 @@ public class RTBytezToolWindow {
             }
         };
 
+        Separator separator = new Separator();
 
         ActionGroup group = new DefaultActionGroup(
-                connectButton, refreshButton, createRoomButton, serverManagerButton, filesButton, membersButton,
+                connectButton, refreshButton, separator, createRoomButton, serverManagerButton, filesButton, membersButton,
                 conflictsButton, commitButton, pushButton
         );
 
