@@ -13,7 +13,6 @@ import java.awt.*;
 public class RTBytezToolWindow {
 
     private JPanel rTBytezToolWindowContent;
-    private JPanel actionToolbarPanel;
     private BorderLayoutPanel borderLayoutPanel;
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
@@ -87,14 +86,17 @@ public class RTBytezToolWindow {
 
             }
         };
+
+
         ActionGroup group = new DefaultActionGroup(
                 connectButton, refreshButton, createRoomButton, serverManagerButton, filesButton, membersButton,
                 conflictsButton, commitButton, pushButton
         );
 
         ActionManager actionManager = ActionManager.getInstance();
-        ActionToolbar actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, group, false);
-        actionToolbarPanel = new JPanel();
+        ActionToolbar actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, group, true);
+        borderLayoutPanel = new BorderLayoutPanel();
+        borderLayoutPanel.addToTop(actionToolbar.getComponent());
     }
 }
 
