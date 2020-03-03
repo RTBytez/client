@@ -50,7 +50,7 @@ public class RTBytezToolWindow {
 
             }
         };
-        AnAction membersButton = new AnAction("Members", "Members", AllIcons.Actions.Profile) {
+        AnAction membersButton = new AnAction("Members", "Members", AllIcons.General.User) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
@@ -74,7 +74,7 @@ public class RTBytezToolWindow {
 
             }
         };
-        AnAction createRoomButton = new AnAction("Create Room", "Create Room", AllIcons.Actions.New) {
+        AnAction createRoomButton = new AnAction("Create Room", "Create Room", AllIcons.Actions.OpenNewTab) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
