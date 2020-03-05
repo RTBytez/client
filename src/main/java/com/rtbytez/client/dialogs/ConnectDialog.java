@@ -9,6 +9,7 @@ import java.awt.*;
 public class ConnectDialog extends DialogWrapper {
 
     private JTextField uri = new JTextField();
+
     public ConnectDialog() {
         super(true);
         init();

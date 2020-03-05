@@ -3,13 +3,11 @@ package com.rtbytez.client;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.util.Icons;
 import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.rtbytez.client.dialogs.ConnectDialog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class RTBytezToolWindow {
 
@@ -27,7 +25,6 @@ public class RTBytezToolWindow {
     }
 
     private void createUIComponents() {
-        Dimension size = new Dimension(198, 28);
         AnAction connectButton = new AnAction("Connect", "Connect to RTBytez Server", AllIcons.Actions.Execute) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -47,7 +44,7 @@ public class RTBytezToolWindow {
 
             }
         };
-        AnAction filesButton = new AnAction("Files", "Files", Icons.FOLDER_ICON) {
+        AnAction filesButton = new AnAction("Files", "Files", AllIcons.Nodes.CopyOfFolder) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
@@ -65,25 +62,25 @@ public class RTBytezToolWindow {
 
             }
         };
-        AnAction commitButton = new AnAction("Commit", "Commit", AllIcons.Actions.Menu_saveall) {
+        AnAction commitButton = new AnAction("Commit", "Commit", AllIcons.Actions.Commit) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
             }
         };
-        AnAction pushButton = new AnAction("Push", "Push", AllIcons.Actions.Upload) {
+        AnAction pushButton = new AnAction("Push", "Push", AllIcons.Vcs.Push) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
             }
         };
-        AnAction createRoomButton = new AnAction("Create Room", "Create Room", AllIcons.Actions.New) {
+        AnAction createRoomButton = new AnAction("Create Room", "Create room", AllIcons.Actions.New) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
             }
         };
-        AnAction serverManagerButton = new AnAction("Server Manager", "Server Manager", AllIcons.Actions.Lightning) {
+        AnAction serverManagerButton = new AnAction("Server Manager", "Server manager", AllIcons.Actions.Lightning) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
@@ -98,7 +95,7 @@ public class RTBytezToolWindow {
         );
 
         ActionManager actionManager = ActionManager.getInstance();
-        ActionToolbar actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, group, true);
+        ActionToolbar actionToolbar = actionManager.createActionToolbar("RTBytez Top", group, true);
         borderLayoutPanel = new BorderLayoutPanel();
         borderLayoutPanel.addToTop(actionToolbar.getComponent());
     }
