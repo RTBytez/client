@@ -29,4 +29,5 @@ public class CredentialsDialog extends DialogWrapper {
         dialog.add(password);
         return dialog;
     }
+
 }
