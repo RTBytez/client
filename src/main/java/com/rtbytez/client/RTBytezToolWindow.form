@@ -8,16 +8,24 @@
     <properties/>
     <border type="none" title=""/>
     <children>
-      <vspacer id="ab60e">
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
       <component id="8caae" class="com.intellij.util.ui.components.BorderLayoutPanel" binding="borderLayoutPanel" custom-create="true">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
+      </component>
+      <component id="9ac79" class="javax.swing.JList" binding="list1" default-binding="true">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="50"/>
+          </grid>
+        </constraints>
+        <properties>
+          <model>
+            <item value="Hello"/>
+            <item value="World"/>
+          </model>
+        </properties>
       </component>
     </children>
   </grid>

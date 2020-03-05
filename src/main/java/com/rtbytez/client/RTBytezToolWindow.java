@@ -15,12 +15,14 @@ public class RTBytezToolWindow {
 
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
+    private JList list1;
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
 
     }
 
     public JPanel getContent() {
+        rTBytezToolWindowContent.setBorder(BorderFactory.createEmptyBorder());
         return rTBytezToolWindowContent;
     }
 
@@ -75,7 +77,7 @@ public class RTBytezToolWindow {
 
             }
         };
-        AnAction createRoomButton = new AnAction("Create Room", "Create Room", AllIcons.Actions.OpenNewTab) {
+        AnAction createRoomButton = new AnAction("Create Room", "Create Room", AllIcons.Actions.New) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 
