@@ -3,6 +3,7 @@ package com.rtbytez.client;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.util.Icons;
 import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.rtbytez.client.dialogs.ConnectDialog;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ public class RTBytezToolWindow {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ConnectDialog connection = new ConnectDialog();
-                connection.getUriText();
+                String uri = connection.getUriText();
             }
         };
         AnAction disconnectButton = new AnAction("Disconnect", "Disconnect from RTBytez Server", AllIcons.Actions.Exit) {
@@ -44,7 +45,7 @@ public class RTBytezToolWindow {
 
             }
         };
-        AnAction filesButton = new AnAction("Files", "Files", AllIcons.Actions.NewFolder) {
+        AnAction filesButton = new AnAction("Files", "Files", Icons.FOLDER_ICON) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
 

@@ -9,7 +9,6 @@ import java.awt.*;
 public class ConnectDialog extends DialogWrapper {
 
     private JTextField uri = new JTextField();
-
     public ConnectDialog() {
         super(true);
         init();
@@ -29,8 +28,12 @@ public class ConnectDialog extends DialogWrapper {
         return dialog;
     }
 
+
     public String getUriText() {
         createCenterPanel();
+        show();
         return uri.getText();
     }
+
 }
+
