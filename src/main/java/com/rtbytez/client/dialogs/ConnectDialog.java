@@ -32,7 +32,6 @@ public class ConnectDialog extends DialogWrapper {
 
     public String getUriText() {
         createCenterPanel();
-        show();
         return uri.getText();
     }
 

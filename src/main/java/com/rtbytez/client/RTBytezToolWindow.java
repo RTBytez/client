@@ -4,10 +4,10 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.util.ui.components.BorderLayoutPanel;
-import com.rtbytez.client.dialogs.ConnectDialog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class RTBytezToolWindow {
 
@@ -28,8 +28,10 @@ public class RTBytezToolWindow {
         AnAction connectButton = new AnAction("Connect", "Connect to RTBytez Server", AllIcons.Actions.Execute) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ConnectDialog connection = new ConnectDialog();
-                String uri = connection.getUriText();
+                URIGetter uriGetter = new URIGetter();
+                CredentialsGetter credentialsGetter = new CredentialsGetter();
+                String uri = uriGetter.retrieveURI();
+                ArrayList<String> credentials = credentialsGetter.retrieveCredentials();
             }
         };
         AnAction disconnectButton = new AnAction("Disconnect", "Disconnect from RTBytez Server", AllIcons.Actions.Exit) {
