@@ -13,8 +13,7 @@ public class RTBytezToolWindow {
 
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
-    private JList list1;
-
+    public JTree rTBytezTree;
     public RTBytezToolWindow(ToolWindow toolWindow) {
 
     }
@@ -29,6 +28,9 @@ public class RTBytezToolWindow {
     public boolean isRoomOperator = true;
 
     private void createUIComponents() {
+        JButton button = new JButton();
+        JLabel buttonLabel = new JLabel("BUtton");
+        button.add(buttonLabel);
         AnAction connectButton = new AnAction("Connect", "Connect to RTBytez Server", AllIcons.Actions.Execute) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -76,7 +78,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isConnected);
+                e.getPresentation().setEnabled(isRoomOperator);
             }
         };
         AnAction membersButton = new AnAction("Members", "Members", AllIcons.General.User) {
@@ -87,7 +89,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isConnected);
+                e.getPresentation().setEnabled(isRoomOperator);
             }
         };
         AnAction conflictsButton = new AnAction("Conflicts", "Conflicts", AllIcons.Actions.Cancel) {
@@ -97,7 +99,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isRoomOperator);
+                e.getPresentation().setEnabled(isRoomOperator);
             }
         };
         AnAction commitButton = new AnAction("Commit", "Commit", AllIcons.Actions.Commit) {
@@ -108,7 +110,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isRoomOperator);
+                e.getPresentation().setEnabled(isRoomOperator);
             }
         };
         AnAction pushButton = new AnAction("Push", "Push", AllIcons.Vcs.Push) {
@@ -119,7 +121,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isRoomOperator);
+                e.getPresentation().setEnabled(isRoomOperator);
             }
         };
         AnAction createRoomButton = new AnAction("Create Room", "Create room", AllIcons.General.Add) {
@@ -147,13 +149,18 @@ public class RTBytezToolWindow {
 
         Separator separator = new Separator();
         ActionGroup finalGroup = new DefaultActionGroup(
-                connectButton, disconnectButton, refreshButton, membersButton, filesButton, createRoomButton,
-                separator, commitButton, pushButton, conflictsButton, separator, serverManagerButton
+                connectButton, disconnectButton, refreshButton, separator, createRoomButton,
+                separator, membersButton, filesButton, commitButton, pushButton, conflictsButton,
+                separator, serverManagerButton
         );
         ActionManager actionManager = ActionManager.getInstance();
         ActionToolbar actionToolbar = actionManager.createActionToolbar("RTBytez Top", finalGroup, true);
         borderLayoutPanel = new BorderLayoutPanel();
         borderLayoutPanel.addToTop(actionToolbar.getComponent());
+    }
+
+    private void createTree() {
+        rTBytezTree.getModel();
     }
 }
 
