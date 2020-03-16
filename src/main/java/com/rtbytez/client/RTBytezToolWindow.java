@@ -11,9 +11,13 @@ import java.util.ArrayList;
 
 public class RTBytezToolWindow {
 
+    public JTree rTBytezTree;
+    public boolean isConnected = true;
+    public boolean isServerManager = true;
+    public boolean isRoomOperator = true;
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
-    public JTree rTBytezTree;
+
     public RTBytezToolWindow(ToolWindow toolWindow) {
 
     }
@@ -22,10 +26,6 @@ public class RTBytezToolWindow {
         rTBytezToolWindowContent.setBorder(BorderFactory.createEmptyBorder());
         return rTBytezToolWindowContent;
     }
-
-    public boolean isConnected = true;
-    public boolean isServerManager = true;
-    public boolean isRoomOperator = true;
 
     private void createUIComponents() {
         JButton button = new JButton();

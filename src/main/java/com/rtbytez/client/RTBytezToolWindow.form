@@ -21,8 +21,8 @@
           </grid>
         </constraints>
         <properties>
-          <editable value="true"/>
-          <rootVisible value="true"/>
+          <editable value="false"/>
+          <rootVisible value="false"/>
           <showsRootHandles value="true"/>
         </properties>
         <clientProperties>
