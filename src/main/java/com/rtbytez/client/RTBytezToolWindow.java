@@ -7,6 +7,8 @@ import com.intellij.util.ui.components.BorderLayoutPanel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import java.util.ArrayList;
 
 public class RTBytezToolWindow {
@@ -73,7 +75,13 @@ public class RTBytezToolWindow {
         AnAction filesButton = new AnAction("Files", "Files", AllIcons.Nodes.CopyOfFolder) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-
+                //TODO: Wakester - break through
+                DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+                DefaultMutableTreeNode top1 = new DefaultMutableTreeNode("top1");
+                top1.add(new DefaultMutableTreeNode("Hi"));
+                top1.add(new DefaultMutableTreeNode("Sup"));
+                root.add(top1);
+                rTBytezTree.setModel(new DefaultTreeModel(root));
             }
 
             @Override
