@@ -14,19 +14,40 @@ import java.util.ArrayList;
 public class RTBytezToolWindow {
 
     public JTree rTBytezTree;
-    public boolean isConnected = true;
+    public DefaultTreeModel treeModel;
+    public boolean isConnected = false;
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    DefaultMutableTreeNode files = new DefaultMutableTreeNode("Files");
+    DefaultMutableTreeNode members = new DefaultMutableTreeNode("Members");
     public boolean isServerManager = true;
     public boolean isRoomOperator = true;
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
-
     }
 
     public JPanel getContent() {
         rTBytezToolWindowContent.setBorder(BorderFactory.createEmptyBorder());
+        setupTree();
         return rTBytezToolWindowContent;
+    }
+
+    private void setupTree() {
+        root.add(files);
+        root.add(members);
+        treeModel = new DefaultTreeModel(root);
+        rTBytezTree.setModel(treeModel);
+    }
+
+    private void addNewFile(String filename) {
+        files.add(new DefaultMutableTreeNode(filename));
+        treeModel.reload();
+    }
+
+    private void addNewMember(String membername) {
+        members.add(new DefaultMutableTreeNode(membername));
+        rTBytezTree.setModel(new DefaultTreeModel(root));
     }
 
     private void createUIComponents() {
@@ -75,13 +96,6 @@ public class RTBytezToolWindow {
         AnAction filesButton = new AnAction("Files", "Files", AllIcons.Nodes.CopyOfFolder) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                //TODO: Wakester - break through
-                DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-                DefaultMutableTreeNode top1 = new DefaultMutableTreeNode("top1");
-                top1.add(new DefaultMutableTreeNode("Hi"));
-                top1.add(new DefaultMutableTreeNode("Sup"));
-                root.add(top1);
-                rTBytezTree.setModel(new DefaultTreeModel(root));
             }
 
             @Override
@@ -146,7 +160,6 @@ public class RTBytezToolWindow {
         AnAction serverManagerButton = new AnAction("Server Manager", "Server manager", AllIcons.Actions.Lightning) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-
             }
 
             @Override
