@@ -7,18 +7,12 @@ import com.intellij.util.ui.components.BorderLayoutPanel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.util.ArrayList;
 
 public class RTBytezToolWindow {
 
     public JTree rTBytezTree;
-    public DefaultTreeModel treeModel;
     public boolean isConnected = false;
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-    DefaultMutableTreeNode files = new DefaultMutableTreeNode("Files");
-    DefaultMutableTreeNode members = new DefaultMutableTreeNode("Members");
     public boolean isServerManager = true;
     public boolean isRoomOperator = true;
     private JPanel rTBytezToolWindowContent;
@@ -29,25 +23,7 @@ public class RTBytezToolWindow {
 
     public JPanel getContent() {
         rTBytezToolWindowContent.setBorder(BorderFactory.createEmptyBorder());
-        setupTree();
         return rTBytezToolWindowContent;
-    }
-
-    private void setupTree() {
-        root.add(files);
-        root.add(members);
-        treeModel = new DefaultTreeModel(root);
-        rTBytezTree.setModel(treeModel);
-    }
-
-    private void addNewFile(String filename) {
-        files.add(new DefaultMutableTreeNode(filename));
-        treeModel.reload();
-    }
-
-    private void addNewMember(String membername) {
-        members.add(new DefaultMutableTreeNode(membername));
-        rTBytezTree.setModel(new DefaultTreeModel(root));
     }
 
     private void createUIComponents() {
