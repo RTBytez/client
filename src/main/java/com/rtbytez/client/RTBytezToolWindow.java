@@ -25,8 +25,6 @@ public class RTBytezToolWindow {
     public JPanel getContent() {
         rTBytezToolWindowContent.setBorder(BorderFactory.createEmptyBorder());
         treeController.setupTree();
-        treeController.addMember("bill");
-        treeController.deleteMember("bill");
         return rTBytezToolWindowContent;
     }
 
