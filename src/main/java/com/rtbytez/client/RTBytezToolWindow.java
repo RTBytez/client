@@ -17,12 +17,16 @@ public class RTBytezToolWindow {
     public boolean isRoomOperator = true;
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
+    private TreeController treeController = new TreeController(rTBytezTree);
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
     }
 
     public JPanel getContent() {
         rTBytezToolWindowContent.setBorder(BorderFactory.createEmptyBorder());
+        treeController.setupTree();
+        treeController.addMember("bill");
+        treeController.deleteMember("bill");
         return rTBytezToolWindowContent;
     }
 

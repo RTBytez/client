@@ -19,6 +19,7 @@ public class TreeController {
         root.add(files);
         root.add(members);
         treeModel = new DefaultTreeModel(root);
+
         tree.setModel(treeModel);
     }
 
@@ -30,5 +31,23 @@ public class TreeController {
     public void addMember(String membername) {
         members.add(new DefaultMutableTreeNode(membername));
         treeModel.reload();
+    }
+
+    public void deleteMember(String membername) {
+
+        DefaultMutableTreeNode curNode = members.getNextNode();
+        while (!curNode.toString().equals(membername)) {
+            curNode = members.getNextNode();
+        }
+        members.remove(curNode);
+    }
+
+    public void deleteFile(String filename) {
+
+        DefaultMutableTreeNode curNode = files.getNextNode();
+        while (!curNode.toString().equals(filename)) {
+            curNode = files.getNextNode();
+        }
+        files.remove(curNode);
     }
 }
