@@ -1,8 +1,12 @@
 package com.rtbytez.client;
 
+import com.intellij.icons.AllIcons;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
+import java.awt.*;
 
 public class TreeController {
     private JTree tree;
@@ -16,10 +20,28 @@ public class TreeController {
     }
 
     public void setupTree() {
-        root.add(files);
-        root.add(members);
+        root.add(new DefaultMutableTreeNode(new CustomTreeNode("Files", AllIcons.Nodes.CopyOfFolder)));
+        root.add(new DefaultMutableTreeNode(new CustomTreeNode("Members", AllIcons.General.User)));
         treeModel = new DefaultTreeModel(root);
+        class NodeTreeCellRenderer implements TreeCellRenderer {
+            private JLabel label;
 
+            NodeTreeCellRenderer() {
+                label = new JLabel();
+            }
+
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                Object o = ((DefaultMutableTreeNode) value).getUserObject();
+                if (o instanceof CustomTreeNode) {
+                    CustomTreeNode customTreeNode = (CustomTreeNode) o;
+                    label.setIcon(customTreeNode.getIcon());
+                    label.setText(customTreeNode.getName());
+                }
+                return label;
+            }
+        }
+        tree.setCellRenderer(new NodeTreeCellRenderer());
         tree.setModel(treeModel);
     }
 
@@ -34,7 +56,6 @@ public class TreeController {
     }
 
     public void deleteMember(String membername) {
-
         DefaultMutableTreeNode curNode = members.getNextNode();
         while (!curNode.toString().equals(membername)) {
             curNode = members.getNextNode();
