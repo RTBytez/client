@@ -11,8 +11,8 @@ import java.awt.*;
 public class TreeController {
     private JTree tree;
     private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-    private DefaultMutableTreeNode files = new DefaultMutableTreeNode("Files");
-    private DefaultMutableTreeNode members = new DefaultMutableTreeNode("Members");
+    private DefaultMutableTreeNode files = new DefaultMutableTreeNode(new CustomTreeNode("Files", AllIcons.Nodes.CopyOfFolder));
+    private DefaultMutableTreeNode members = new DefaultMutableTreeNode(new CustomTreeNode("Members", AllIcons.General.User));
     private DefaultTreeModel treeModel;
 
     public TreeController(JTree tree) {
@@ -20,8 +20,8 @@ public class TreeController {
     }
 
     public void setupTree() {
-        root.add(new DefaultMutableTreeNode(new CustomTreeNode("Files", AllIcons.Nodes.CopyOfFolder)));
-        root.add(new DefaultMutableTreeNode(new CustomTreeNode("Members", AllIcons.General.User)));
+        root.add(members);
+        root.add(files);
         treeModel = new DefaultTreeModel(root);
         class NodeTreeCellRenderer implements TreeCellRenderer {
             private JLabel label;
@@ -46,29 +46,38 @@ public class TreeController {
     }
 
     public void addFile(String filename) {
-        files.add(new DefaultMutableTreeNode(filename));
+        files.add(new DefaultMutableTreeNode(new CustomTreeNode(filename, AllIcons.Nodes.CopyOfFolder)));
         treeModel.reload();
     }
 
     public void addMember(String membername) {
-        members.add(new DefaultMutableTreeNode(membername));
+        members.add(new DefaultMutableTreeNode(new CustomTreeNode(membername, AllIcons.General.User)));
         treeModel.reload();
     }
 
     public void deleteMember(String membername) {
-        DefaultMutableTreeNode curNode = members.getNextNode();
-        while (!curNode.toString().equals(membername)) {
-            curNode = members.getNextNode();
+        DefaultMutableTreeNode curNode;
+        for (int i = 0; i < members.getChildCount(); i++) {
+            curNode = (DefaultMutableTreeNode) members.getChildAt(i);
+            if (curNode.getUserObject() instanceof CustomTreeNode) {
+                if (((CustomTreeNode) curNode.getUserObject()).getName().equals(membername)) {
+                    members.remove(curNode);
+                    break;
+                }
+            }
         }
-        members.remove(curNode);
     }
 
     public void deleteFile(String filename) {
-
-        DefaultMutableTreeNode curNode = files.getNextNode();
-        while (!curNode.toString().equals(filename)) {
-            curNode = files.getNextNode();
+        DefaultMutableTreeNode curNode;
+        for (int i = 0; i < files.getChildCount(); i++) {
+            curNode = (DefaultMutableTreeNode) files.getChildAt(i);
+            if (curNode.getUserObject() instanceof CustomTreeNode) {
+                if (((CustomTreeNode) curNode.getUserObject()).getName().equals(filename)) {
+                    files.remove(curNode);
+                    break;
+                }
+            }
         }
-        files.remove(curNode);
     }
 }
