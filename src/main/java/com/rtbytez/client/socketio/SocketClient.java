@@ -1,7 +1,10 @@
-package com.rtbytez.client;
+package com.rtbytez.client.socketio;
 
+import com.rtbytez.client.RTJsonHandler;
+import com.rtbytez.client.util.Console;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -37,6 +40,10 @@ public class SocketClient {
      * @param handler A JSON Handler that will execute the method
      */
     public void register(String header, RTJsonHandler handler) {
+        //TODO: Create
+    }
+
+    public void emit(String header, JSONObject json) {
         //TODO: Create
     }
 }

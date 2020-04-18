@@ -2,6 +2,8 @@ package com.rtbytez.client;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.rtbytez.client.socketio.SocketClient;
+import com.rtbytez.client.util.Console;
 
 public class RTBytezClient {
 
@@ -10,7 +12,7 @@ public class RTBytezClient {
 
     private SocketClient socketClient;
     private RTEventHandler eventHandler;
-    private Project project;
+    private final Project project;
 
     /**
      * Private-Constructor due to singleton instance.

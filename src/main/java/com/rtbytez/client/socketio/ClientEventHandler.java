@@ -7,5 +7,5 @@ public abstract class ClientEventHandler {
      * @param header
      * @param client
      */
-    public abstract void exec(String header, Client client);
+    public abstract void exec(String header, SocketClient client);
 }

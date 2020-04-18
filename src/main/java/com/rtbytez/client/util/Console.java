@@ -1,4 +1,4 @@
-package com.rtbytez.client;
+package com.rtbytez.client.util;
 
 public class Console {
 
