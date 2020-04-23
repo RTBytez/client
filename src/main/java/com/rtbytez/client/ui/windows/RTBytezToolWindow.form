@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.rtbytez.client.ui.windows.RTBytezToolWindow">
+  <grid id="ecf37" binding="rTBytezToolWindowContent" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="0" y="54" width="340" height="334"/>
+    </constraints>
+    <properties/>
+    <border type="none" title=""/>
+    <children>
+      <component id="8caae" class="com.intellij.util.ui.components.BorderLayoutPanel" binding="borderLayoutPanel" custom-create="true">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="43024" class="javax.swing.JTree" binding="rTBytezTree">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="50"/>
+          </grid>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <rootVisible value="false"/>
+          <showsRootHandles value="true"/>
+        </properties>
+        <clientProperties>
+          <JTree.lineStyle class="java.lang.String" value=""/>
+        </clientProperties>
+      </component>
+    </children>
+  </grid>
+  <inspectionSuppressions>
+    <suppress inspection="I18nForm"/>
+    <suppress inspection="MissingMnemonic"/>
+  </inspectionSuppressions>
+</form>

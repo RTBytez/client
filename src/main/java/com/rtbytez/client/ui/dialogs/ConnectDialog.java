@@ -1,4 +1,4 @@
-package com.rtbytez.client.dialogs;
+package com.rtbytez.client.ui.dialogs;
 
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class ConnectDialog extends DialogWrapper {
 
-    private JTextField uri = new JTextField();
+    private final JTextField uri = new JTextField();
 
     public ConnectDialog() {
         super(true);
@@ -29,8 +29,11 @@ public class ConnectDialog extends DialogWrapper {
         return dialog;
     }
 
+
     public String getUriText() {
         createCenterPanel();
         return uri.getText();
     }
+
 }
+

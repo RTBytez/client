@@ -21,12 +21,12 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="RTBytez" secondary="true" anchor="right"
-                    factoryClass="com.rtbytez.client.RTBytezToolWindowFactory"/>
+                    factoryClass="com.rtbytez.client.ui.RTBytezToolWindowFactory"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
-        <action id="com.rtbytez.client.URIGetter" class="com.rtbytez.client.URIGetter" text="Connect">
+        <action id="com.rtbytez.client.actions.URIGetter" class="com.rtbytez.client.actions.URIGetter" text="Connect">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
     </actions>
