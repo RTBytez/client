@@ -1,9 +1,12 @@
-package com.rtbytez.client;
+package com.rtbytez.client.ui.windows;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.util.ui.components.BorderLayoutPanel;
+import com.rtbytez.client.actions.CredentialsGetter;
+import com.rtbytez.client.actions.URIGetter;
+import com.rtbytez.client.ui.util.TreeController;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -17,7 +20,7 @@ public class RTBytezToolWindow {
     public boolean isRoomOperator = true;
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
-    private TreeController treeController = new TreeController(rTBytezTree);
+    private final TreeController treeController = new TreeController(rTBytezTree);
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
     }

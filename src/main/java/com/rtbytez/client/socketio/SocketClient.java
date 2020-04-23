@@ -1,6 +1,5 @@
 package com.rtbytez.client.socketio;
 
-import com.rtbytez.client.RTJsonHandler;
 import com.rtbytez.client.util.Console;
 import io.socket.client.IO;
 import io.socket.client.Socket;

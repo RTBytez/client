@@ -1,4 +1,4 @@
-package com.rtbytez.client;
+package com.rtbytez.client.ui.util;
 
 import com.intellij.icons.AllIcons;
 
@@ -9,10 +9,10 @@ import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
 public class TreeController {
-    private JTree tree;
-    private DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-    private DefaultMutableTreeNode files = new DefaultMutableTreeNode(new CustomTreeNode("Files", AllIcons.Nodes.CopyOfFolder));
-    private DefaultMutableTreeNode members = new DefaultMutableTreeNode(new CustomTreeNode("Members", AllIcons.General.User));
+    private final JTree tree;
+    private final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+    private final DefaultMutableTreeNode files = new DefaultMutableTreeNode(new CustomTreeNode("Files", AllIcons.Nodes.CopyOfFolder));
+    private final DefaultMutableTreeNode members = new DefaultMutableTreeNode(new CustomTreeNode("Members", AllIcons.General.User));
     private DefaultTreeModel treeModel;
 
     public TreeController(JTree tree) {
@@ -24,7 +24,7 @@ public class TreeController {
         root.add(files);
         treeModel = new DefaultTreeModel(root);
         class NodeTreeCellRenderer implements TreeCellRenderer {
-            private JLabel label;
+            private final JLabel label;
 
             NodeTreeCellRenderer() {
                 label = new JLabel();

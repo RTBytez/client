@@ -1,8 +1,9 @@
-package com.rtbytez.client;
+package com.rtbytez.client.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.rtbytez.client.dialogs.ConnectDialog;
+import com.rtbytez.client.RTBytezClient;
+import com.rtbytez.client.ui.dialogs.ConnectDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URISyntaxException;

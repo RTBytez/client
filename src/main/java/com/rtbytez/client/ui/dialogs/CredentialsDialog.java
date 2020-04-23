@@ -1,4 +1,4 @@
-package com.rtbytez.client.dialogs;
+package com.rtbytez.client.ui.dialogs;
 
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;

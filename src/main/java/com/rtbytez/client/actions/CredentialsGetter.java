@@ -1,8 +1,8 @@
-package com.rtbytez.client;
+package com.rtbytez.client.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.rtbytez.client.dialogs.CredentialsDialog;
+import com.rtbytez.client.ui.dialogs.CredentialsDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

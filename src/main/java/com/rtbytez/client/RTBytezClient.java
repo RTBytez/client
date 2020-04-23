@@ -2,6 +2,7 @@ package com.rtbytez.client;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.rtbytez.client.socketio.RTEventHandler;
 import com.rtbytez.client.socketio.SocketClient;
 import com.rtbytez.client.util.Console;
 

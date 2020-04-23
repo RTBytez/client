@@ -1,10 +1,10 @@
-package com.rtbytez.client;
+package com.rtbytez.client.ui.util;
 
 import javax.swing.*;
 
 public class CustomTreeNode {
-    private Icon icon;
-    private String name;
+    private final Icon icon;
+    private final String name;
 
     public CustomTreeNode(String name, Icon icon) {
         this.icon = icon;
