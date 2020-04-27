@@ -2,17 +2,13 @@ package com.rtbytez.client;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.rtbytez.client.socketio.RTEventHandler;
-import com.rtbytez.client.socketio.SocketClient;
-import com.rtbytez.client.util.Console;
+import com.rtbytez.common.util.Console;
 
 public class RTBytezClient {
 
     private static RTBytezClient instance = null;
     private static boolean isInitialized = false;
 
-    private SocketClient socketClient;
-    private RTEventHandler eventHandler;
     private final Project project;
 
     /**
@@ -42,16 +38,7 @@ public class RTBytezClient {
 
     private void init() {
         Console.log("ClientInstance", "Initializing");
-        this.socketClient = new SocketClient();
-        this.eventHandler = new RTEventHandler();
         Console.log("ClientInstance", "Finished initializing!");
-    }
-
-    /**
-     * Retrieve the socket client that is responsible for communication between the client and server
-     */
-    public SocketClient getSocketClient() {
-        return socketClient;
     }
 
     /**
@@ -59,12 +46,5 @@ public class RTBytezClient {
      */
     public Project getProject() {
         return project;
-    }
-
-    /**
-     * Retrieve the event handler responsible for socket events
-     */
-    public RTEventHandler getEventHandler() {
-        return eventHandler;
     }
 }

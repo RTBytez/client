@@ -6,19 +6,12 @@ import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.client.ui.dialogs.ConnectDialog;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URISyntaxException;
-
 public class URIGetter extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         System.out.println("Point A");
         RTBytezClient client = RTBytezClient.getInstance();
-        try {
-            client.getSocketClient().connect(retrieveURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
     }
 
     public String retrieveURI() {
