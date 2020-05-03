@@ -4,9 +4,9 @@ import org.apache.commons.validator.routines.DomainValidator;
 import org.apache.commons.validator.routines.InetAddressValidator;
 
 public class InputSanitizer {
-    private static String username = null;
-    private static String host = null;
-    private static String port = null;
+    private String username = null;
+    private String host = null;
+    private String port = null;
 
     public ConnectSanitizedInput sanitizeInputs(String input) {
         String s = input.substring(10, input.length() - 1) + input.charAt(input.length() - 1);
