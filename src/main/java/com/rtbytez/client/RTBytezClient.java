@@ -2,7 +2,9 @@ package com.rtbytez.client;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.rtbytez.common.util.Console;
+import com.rtbytez.client.editor.PSIChangeEventHandler;
+import com.rtbytez.client.editor.VFSEventHandler;
+import com.rtbytez.client.socket.Peer;
 
 public class RTBytezClient {
 
@@ -10,6 +12,9 @@ public class RTBytezClient {
     private static boolean isInitialized = false;
 
     private final Project project;
+    private final VFSEventHandler vfsEventHandler;
+    private final PSIChangeEventHandler psiChangeEventHandler;
+    private final Peer peer;
 
     /**
      * Private-Constructor due to singleton instance.
@@ -19,6 +24,9 @@ public class RTBytezClient {
      */
     private RTBytezClient() {
         this.project = ProjectManager.getInstance().getOpenProjects()[0];
+        this.vfsEventHandler = new VFSEventHandler();
+        this.psiChangeEventHandler = new PSIChangeEventHandler();
+        this.peer = new Peer();
     }
 
     /**
@@ -30,15 +38,18 @@ public class RTBytezClient {
         if (!isInitialized) {
             isInitialized = true;
             instance = new RTBytezClient();
-            instance.init();
+            instance.getVfsEventHandler().register();
+            instance.getPsiChangeEventHandler().register();
             return instance;
         }
         return instance;
     }
 
-    private void init() {
-        Console.log("ClientInstance", "Initializing");
-        Console.log("ClientInstance", "Finished initializing!");
+    /**
+     * Retrieve the peer associated with this client
+     */
+    public Peer getPeer() {
+        return peer;
     }
 
     /**
@@ -46,5 +57,13 @@ public class RTBytezClient {
      */
     public Project getProject() {
         return project;
+    }
+
+    public VFSEventHandler getVfsEventHandler() {
+        return vfsEventHandler;
+    }
+
+    public PSIChangeEventHandler getPsiChangeEventHandler() {
+        return psiChangeEventHandler;
     }
 }
