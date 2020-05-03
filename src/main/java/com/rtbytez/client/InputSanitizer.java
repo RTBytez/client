@@ -1,44 +1,38 @@
 package com.rtbytez.client;
 
-import org.apache.commons.validator.Validator;
 import org.apache.commons.validator.routines.DomainValidator;
 import org.apache.commons.validator.routines.InetAddressValidator;
-import org.bouncycastle.util.IPAddress;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class InputSanitizer {
     private static String username = null;
     private static String host = null;
     private static String port = null;
 
-    private static ConnectSanitizedInput sanitizeInputs(String input){
+    public ConnectSanitizedInput sanitizeInputs(String input) {
         String s = input.substring(10, input.length() - 1) + input.charAt(input.length() - 1);
         String[] creds = s.split("@");
-        if (creds.length == 2){
+        if (creds.length == 2) {
             username = creds[0];
             creds = creds[1].split(":");
-            if(creds.length == 2){
+            if (creds.length == 2) {
                 host = creds[0];
                 port = creds[1];
-            }
-            else{
+            } else {
                 host = creds[0];
             }
-        }
-        else{
+        } else {
             creds = creds[0].split(":");
-            if(creds.length == 2){
+            if (creds.length == 2) {
                 port = creds[1];
             }
             host = creds[0];
         }
-        return new ConnectSanitizedInput(host, Integer.parseInt(port), username);
+        return new ConnectSanitizedInput(host, port, username);
     }
-    private static boolean validateHost(String host){
+
+    public boolean validateHost(String host) {
         return (DomainValidator.getInstance().isValid(host) || InetAddressValidator.getInstance().isValid(host));
     }
-    }
+
+}
 
