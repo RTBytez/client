@@ -21,7 +21,7 @@ public class DocumentChangeHandler {
                 Document document = event.getDocument();
                 VirtualFile file = FileDocumentManager.getInstance().getFile(document);
                 if (client.getFileModTracker().exists(file.getPath(), document.getModificationStamp())) {
-
+                    Console.log("Modification was made by REPLACER");
                 }
 
                 int offset = event.getOffset();
@@ -31,8 +31,8 @@ public class DocumentChangeHandler {
                 int firstLine = document.getLineNumber(offset);
                 int lastLine = newLength == 0 ? firstLine : document.getLineNumber(offset + newLength - 1);
 
-                Console.log("First Line: " + firstLine);
-                Console.log("Last line: " + lastLine);
+                //Console.log("First Line: " + firstLine);
+                //Console.log("Last line: " + lastLine);
 
             }
 

@@ -16,8 +16,9 @@ public class FileModTracker {
 
     public boolean exists(String path, long mod) {
         if (cacheSet.containsKey(path)) {
-            Console.log("CACHE GET", path + " == " + mod + " ? " + cacheSet.containsKey(path));
-            return cacheSet.get(path) == mod;
+            boolean b = cacheSet.get(path) == mod;
+            Console.log("CACHE GET", path + " == " + mod + " ? " + b);
+            return b;
         }
         Console.log("CACHE GET", path + " == " + mod + " ? false");
         return false;
