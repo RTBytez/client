@@ -2,17 +2,23 @@ package com.rtbytez.client.util;
 
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.impl.DocumentImpl;
+import com.intellij.openapi.fileTypes.FileTypeManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.client.file.Line;
 import com.rtbytez.common.util.Console;
 
-import java.net.MalformedURLException;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class Functions {
 
@@ -20,17 +26,7 @@ public class Functions {
 
     }
 
-    public static void replace(String path, Line line) throws MalformedURLException {
-        //String[] split = path.split("/");
-        //String directory;
-        //if (split.length != 1) {
-        //    String[] directories = Arrays.copyOf(split, split.length - 1);
-        //    directory = String.join("/", directories);
-        //} else {
-        //    directory = "";
-        //}
-        //String fileName = split[split.length - 1];
-
+    public static void replace(String path, Line line) {
         RTBytezClient client = RTBytezClient.getInstance();
         VirtualFile virtualFile = ProjectRootManager.getInstance(client.getProject()).getContentRoots()[0].findFileByRelativePath(path);
         if (virtualFile != null) {
@@ -47,5 +43,19 @@ public class Functions {
         } else {
             Console.log("REPLACER", "Couldn't find the file: " + path);
         }
+    }
+
+    public static PsiFile psiFileFromString(String fileName) throws ParserConfigurationException {
+        String[] splitFileName = fileName.split(Pattern.quote("."));
+        String fileTypeExtension = splitFileName[1];
+        Project project = RTBytezClient.getInstance().getProject();
+        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+        PsiFile psiFile = psiFileFactory.createFileFromText(fileName, FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+        try {
+            VfsUtil.saveText(psiFile.getVirtualFile(), "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return psiFile;
     }
 }

@@ -10,7 +10,7 @@ import com.rtbytez.client.trackers.FileModTracker;
 import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.util.Console;
 
-import java.net.MalformedURLException;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class RTBytezClient {
 
@@ -74,9 +74,10 @@ public class RTBytezClient {
 
     public static void dummy() {
         Line abc123 = new Line("123abc", 1, "abc123");
+        Functions.replace("foo/bar.txt", abc123);
         try {
-            Functions.replace("foo/bar.txt", abc123);
-        } catch (MalformedURLException e) {
+            Functions.psiFileFromString("obama.txt");
+        } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
         Console.log("Ran dummy test code");
