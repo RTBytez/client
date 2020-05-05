@@ -15,6 +15,7 @@ public class VFSEventHandler {
 
     public void register() {
         MessageBus messageBus = RTBytezClient.getInstance().getProject().getMessageBus();
+
         messageBus.connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
             @Override
             public void after(@NotNull List<? extends VFileEvent> events) {
@@ -22,5 +23,4 @@ public class VFSEventHandler {
             }
         });
     }
-
 }

@@ -2,9 +2,15 @@ package com.rtbytez.client;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.rtbytez.client.editor.PSIChangeEventHandler;
+import com.rtbytez.client.editor.DocumentChangeHandler;
 import com.rtbytez.client.editor.VFSEventHandler;
+import com.rtbytez.client.file.Line;
 import com.rtbytez.client.socket.Peer;
+import com.rtbytez.client.trackers.FileModTracker;
+import com.rtbytez.client.util.Functions;
+import com.rtbytez.common.util.Console;
+
+import java.net.MalformedURLException;
 
 public class RTBytezClient {
 
@@ -13,7 +19,8 @@ public class RTBytezClient {
 
     private final Project project;
     private final VFSEventHandler vfsEventHandler;
-    private final PSIChangeEventHandler psiChangeEventHandler;
+    private final DocumentChangeHandler documentChangeHandler;
+    private final FileModTracker fileModTracker;
     private final Peer peer;
 
     /**
@@ -25,7 +32,8 @@ public class RTBytezClient {
     private RTBytezClient() {
         this.project = ProjectManager.getInstance().getOpenProjects()[0];
         this.vfsEventHandler = new VFSEventHandler();
-        this.psiChangeEventHandler = new PSIChangeEventHandler();
+        this.documentChangeHandler = new DocumentChangeHandler();
+        this.fileModTracker = new FileModTracker();
         this.peer = new Peer();
     }
 
@@ -39,7 +47,8 @@ public class RTBytezClient {
             isInitialized = true;
             instance = new RTBytezClient();
             instance.getVfsEventHandler().register();
-            instance.getPsiChangeEventHandler().register();
+            instance.getDocumentChangeHandler().register();
+            dummy();
             return instance;
         }
         return instance;
@@ -63,7 +72,21 @@ public class RTBytezClient {
         return vfsEventHandler;
     }
 
-    public PSIChangeEventHandler getPsiChangeEventHandler() {
-        return psiChangeEventHandler;
+    public static void dummy() {
+        Line abc123 = new Line("123abc", 1, "abc123");
+        try {
+            Functions.replace("foo/bar.txt", abc123);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Console.log("Ran dummy test code");
+    }
+
+    public DocumentChangeHandler getDocumentChangeHandler() {
+        return documentChangeHandler;
+    }
+
+    public FileModTracker getFileModTracker() {
+        return fileModTracker;
     }
 }
