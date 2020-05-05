@@ -22,6 +22,7 @@ public class DocumentChangeHandler {
                 VirtualFile file = FileDocumentManager.getInstance().getFile(document);
                 if (client.getFileModTracker().exists(file.getPath(), document.getModificationStamp())) {
                     Console.log("Modification was made by REPLACER");
+                    return;
                 }
 
                 int offset = event.getOffset();
@@ -38,7 +39,7 @@ public class DocumentChangeHandler {
 
 
         }, () -> {
-            // no clue what this is but it seems to work?
+            Console.log("Disposed");
         });
     }
 }
