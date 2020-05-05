@@ -10,8 +10,6 @@ import com.rtbytez.client.trackers.FileModTracker;
 import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.util.Console;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 public class RTBytezClient {
 
     private static RTBytezClient instance = null;
@@ -54,6 +52,13 @@ public class RTBytezClient {
         return instance;
     }
 
+    public static void dummy() {
+        Line abc123 = new Line("123abc", 1, "abc123");
+        Functions.replace("foo/bar.txt", abc123);
+        Functions.psiFileFromString("obama.txt");
+        Console.log("Ran dummy test code");
+    }
+
     /**
      * Retrieve the peer associated with this client
      */
@@ -70,17 +75,6 @@ public class RTBytezClient {
 
     public VFSEventHandler getVfsEventHandler() {
         return vfsEventHandler;
-    }
-
-    public static void dummy() {
-        Line abc123 = new Line("123abc", 1, "abc123");
-        Functions.replace("foo/bar.txt", abc123);
-        try {
-            Functions.psiFileFromString("obama.txt");
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-        Console.log("Ran dummy test code");
     }
 
     public DocumentChangeHandler getDocumentChangeHandler() {

@@ -16,7 +16,6 @@ import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.client.file.Line;
 import com.rtbytez.common.util.Console;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -45,7 +44,7 @@ public class Functions {
         }
     }
 
-    public static PsiFile psiFileFromString(String fileName) throws ParserConfigurationException {
+    public static PsiFile psiFileFromString(String fileName) {
         String[] splitFileName = fileName.split(Pattern.quote("."));
         String fileTypeExtension = splitFileName[1];
         Project project = RTBytezClient.getInstance().getProject();
