@@ -5,12 +5,12 @@ import com.intellij.openapi.editor.impl.DocumentImpl;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.client.file.Line;
@@ -45,16 +45,21 @@ public class Functions {
     }
 
     public static PsiFile psiFileFromString(String fileName) {
-        String[] splitFileName = fileName.split(Pattern.quote("."));
-        String fileTypeExtension = splitFileName[1];
         Project project = RTBytezClient.getInstance().getProject();
-        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-        PsiFile psiFile = psiFileFactory.createFileFromText(fileName, FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
-        try {
-            VfsUtil.saveText(psiFile.getVirtualFile(), "");
-        } catch (IOException e) {
-            e.printStackTrace();
+        VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
+        String regexString = "/|" + Pattern.quote(".");
+        String[] splitFileName = fileName.split(regexString);
+        String fileTypeExtension = splitFileName[splitFileName.length - 1];
+        for (int i = 0; i < splitFileName.length - 2; i++) {
+            try {
+                currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+        PsiFile psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 2], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+        PsiDirectoryFactory.getInstance(project).createDirectory(currentDirectory).add(psiFile);
         return psiFile;
     }
 }

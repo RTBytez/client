@@ -10,6 +10,11 @@ import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.util.Console;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class DocumentChangeHandler {
 
     public void register() {
@@ -18,10 +23,22 @@ public class DocumentChangeHandler {
         EditorFactory.getInstance().getEventMulticaster().addDocumentListener(new DocumentListener() {
             @Override
             public void documentChanged(@NotNull DocumentEvent event) {
+                String addedOrRemoved;
+                List<Integer> changedLines = new ArrayList<>();
                 Document document = event.getDocument();
                 VirtualFile file = FileDocumentManager.getInstance().getFile(document);
                 if (client.getFileModTracker().exists(file.getPath(), document.getModificationStamp())) {
                     Console.log("Modification was made by REPLACER");
+                }
+                if (event.getNewFragment().toString().equals("\n")) {
+                    addedOrRemoved = "a";
+                    changedLines.add(document.getLineNumber(event.getOffset()) + 2);
+                } else if (event.getNewFragment().length() == 0 && event.getOldFragment().toString().contains("\n")) {
+                    addedOrRemoved = "r";
+                    int numDeletedLines = Collections.frequency(Arrays.asList(event.getOldFragment().toString().split("")), "\n");
+                    for (int i = 0; i < numDeletedLines; i++) {
+                        changedLines.add(i + document.getLineNumber(event.getOffset()) + 2);
+                    }
                 }
 
                 int offset = event.getOffset();
