@@ -20,6 +20,7 @@ public class DocumentChangeHandler {
             public void documentChanged(@NotNull DocumentEvent event) {
                 Document document = event.getDocument();
                 VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+                assert file != null;
                 if (client.getFileModTracker().exists(file.getPath(), document.getModificationStamp())) {
                     Console.log("Modification was made by REPLACER");
                     return;
@@ -38,8 +39,6 @@ public class DocumentChangeHandler {
             }
 
 
-        }, () -> {
-            Console.log("Disposed");
-        });
+        }, () -> Console.log("Disposed"));
     }
 }

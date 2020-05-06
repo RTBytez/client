@@ -7,12 +7,7 @@ import java.util.HashMap;
 
 public class LineMapper {
 
-    HashMap<String, LineMap> lineMaps = new HashMap<>();
-
-
-    public LineMapper() {
-
-    }
+    final HashMap<String, LineMap> lineMaps = new HashMap<>();
 
     public void check(String path) {
         if (!lineMaps.containsKey(path)) {
@@ -61,7 +56,7 @@ public class LineMapper {
     }
 
     static class LineMap {
-        BidirectionalMap<String, Integer> map = new BidirectionalMap<>();
+        final BidirectionalMap<String, Integer> map = new BidirectionalMap<>();
 
         public void map(String lineId, int lineNumber) {
             map.put(lineId, lineNumber);
@@ -79,6 +74,7 @@ public class LineMapper {
             if (!map.containsValue(lineNumber)) {
                 throw new Error("lineNumber " + lineNumber);
             } else {
+                //noinspection ConstantConditions - This case shouldn't exist
                 return map.getKeysByValue(lineNumber).get(0);
             }
         }

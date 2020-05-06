@@ -1,6 +1,5 @@
 package com.rtbytez.client.editor;
 
-
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFileManager;
