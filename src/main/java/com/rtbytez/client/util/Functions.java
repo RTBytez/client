@@ -108,4 +108,12 @@ public class Functions {
         PsiDirectoryFactory.getInstance(project).createDirectory(currentDirectory).add(psiFile);
         return psiFile;
     }
+
+    public static String toRelPath(String fullPath) {
+        Project project = RTBytezClient.getInstance().getProject();
+        String rootDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0].getCanonicalPath() + "/";
+        String s = fullPath.substring(rootDirectory.length());
+        Console.log("RELPATH", s);
+        return s;
+    }
 }

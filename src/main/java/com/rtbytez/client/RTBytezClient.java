@@ -8,7 +8,12 @@ import com.rtbytez.client.file.LineMapper;
 import com.rtbytez.client.socket.Peer;
 import com.rtbytez.client.trackers.FileModTracker;
 import com.rtbytez.client.util.Functions;
+import com.rtbytez.common.comms.packets.file.request.RTPFileRequestAddLine;
+import com.rtbytez.common.comms.packets.file.request.RTPFileRequestCreate;
+import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestCreate;
 import com.rtbytez.common.util.Console;
+
+import java.net.URISyntaxException;
 
 public class RTBytezClient {
 
@@ -37,6 +42,19 @@ public class RTBytezClient {
         this.peer = new Peer();
     }
 
+    public static void dummy() {
+        Functions.replace("foo/bar.txt", 1, "abc123");
+        try {
+            RTBytezClient.getInstance().getPeer().connect("http://localhost:5623");
+            RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestCreate("room"));
+            RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestCreate("file", "foo/bar.txt"));
+            RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestAddLine("file", "foo/bar.txt", 1));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        Console.log("Ran dummy test code");
+    }
+
     /**
      * Retrieve the RTBytezClient singleton instance
      *
@@ -54,10 +72,8 @@ public class RTBytezClient {
         return instance;
     }
 
-    public static void dummy() {
-        Functions.replace("foo/bar.txt", 1, "abc123");
-        //Functions.psiFileFromString("obama.txt");
-        Console.log("Ran dummy test code");
+    public boolean isOperational() {
+        return peer.isConnected();
     }
 
     /**
