@@ -8,8 +8,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class CredentialsDialog extends DialogWrapper {
-    JTextField username = new JTextField();
-    JTextField password = new JTextField();
+    final JTextField username = new JTextField();
+    final JTextField password = new JTextField();
 
     public CredentialsDialog() {
         super(true);
@@ -36,11 +36,11 @@ public class CredentialsDialog extends DialogWrapper {
     }
 
     public ArrayList<String> getCredentials() {
-        ArrayList<String> creds = new ArrayList<>();
+        ArrayList<String> credentials = new ArrayList<>();
         createCenterPanel();
-        creds.add(username.getText());
-        creds.add(password.getText());
-        return creds;
+        credentials.add(username.getText());
+        credentials.add(password.getText());
+        return credentials;
     }
 
 }

@@ -15,12 +15,13 @@ import java.util.ArrayList;
 public class RTBytezToolWindow {
 
     public JTree rTBytezTree;
+    private final TreeController treeController = new TreeController(rTBytezTree);
     public boolean isConnected = false;
     public boolean isServerManager = true;
     public boolean isRoomOperator = true;
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
-    private final TreeController treeController = new TreeController(rTBytezTree);
+    private JScrollPane scrollPane;
 
     public RTBytezToolWindow(ToolWindow toolWindow) {
     }
@@ -33,7 +34,7 @@ public class RTBytezToolWindow {
 
     private void createUIComponents() {
         JButton button = new JButton();
-        JLabel buttonLabel = new JLabel("BUtton");
+        JLabel buttonLabel = new JLabel("Button");
         button.add(buttonLabel);
         AnAction connectButton = new AnAction("Connect", "Connect to RTBytez Server", AllIcons.Actions.Execute) {
             @Override

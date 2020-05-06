@@ -27,8 +27,10 @@ public class DocumentChangeHandler {
                 List<Integer> changedLines = new ArrayList<>();
                 Document document = event.getDocument();
                 VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+                assert file != null;
                 if (client.getFileModTracker().exists(file.getPath(), document.getModificationStamp())) {
                     Console.log("Modification was made by REPLACER");
+                    return;
                 }
                 if (event.getNewFragment().toString().equals("\n")) {
                     addedOrRemoved = "a";
@@ -54,8 +56,6 @@ public class DocumentChangeHandler {
             }
 
 
-        }, () -> {
-            // no clue what this is but it seems to work?
-        });
+        }, () -> Console.log("Disposed"));
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class FileModTracker {
 
-    Map<String, Long> cacheSet = new HashMap<>();
+    final Map<String, Long> cacheSet = new HashMap<>();
 
     public void addCache(String path, long mod) {
         cacheSet.put(path, mod);

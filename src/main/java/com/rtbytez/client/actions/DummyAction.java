@@ -8,6 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public class DummyAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        RTBytezClient.getInstance().dummy();
+        RTBytezClient.dummy();
     }
 }

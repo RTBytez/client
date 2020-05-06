@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.rtbytez.client.editor.DocumentChangeHandler;
 import com.rtbytez.client.editor.VFSEventHandler;
-import com.rtbytez.client.file.Line;
+import com.rtbytez.client.file.LineMapper;
 import com.rtbytez.client.socket.Peer;
 import com.rtbytez.client.trackers.FileModTracker;
 import com.rtbytez.client.util.Functions;
@@ -19,6 +19,7 @@ public class RTBytezClient {
     private final VFSEventHandler vfsEventHandler;
     private final DocumentChangeHandler documentChangeHandler;
     private final FileModTracker fileModTracker;
+    private final LineMapper lineMapper;
     private final Peer peer;
 
     /**
@@ -32,6 +33,7 @@ public class RTBytezClient {
         this.vfsEventHandler = new VFSEventHandler();
         this.documentChangeHandler = new DocumentChangeHandler();
         this.fileModTracker = new FileModTracker();
+        this.lineMapper = new LineMapper();
         this.peer = new Peer();
     }
 
@@ -53,9 +55,8 @@ public class RTBytezClient {
     }
 
     public static void dummy() {
-        Line abc123 = new Line("123abc", 1, "abc123");
-        Functions.replace("foo/bar.txt", abc123);
-        Functions.psiFileFromString("obama.txt");
+        Functions.replace("foo/bar.txt", 1, "abc123");
+        //Functions.psiFileFromString("obama.txt");
         Console.log("Ran dummy test code");
     }
 
@@ -83,5 +84,9 @@ public class RTBytezClient {
 
     public FileModTracker getFileModTracker() {
         return fileModTracker;
+    }
+
+    public LineMapper getLineMapper() {
+        return lineMapper;
     }
 }
