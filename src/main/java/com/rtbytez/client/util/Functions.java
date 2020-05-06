@@ -53,7 +53,7 @@ public class Functions {
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
-            Console.log("REPLACER", "Couldn't find the file: " + path);
+            Console.log("DOCUMENT_EDITOR", "Couldn't run a replacement because we couldn't find the file: " + path);
         }
     }
 
@@ -68,6 +68,8 @@ public class Functions {
                 document.replaceString(offset, offset, "\n", l, false);
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
+        } else {
+            Console.log("DOCUMENT_EDITOR", "Couldn't add a line because we couldn't find the file: " + path);
         }
     }
 
@@ -83,6 +85,8 @@ public class Functions {
                 document.replaceString(startingOffset, endingOffset, "", l, false);
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
+        } else {
+            Console.log("DOCUMENT_EDITOR", "Couldn't remove a line because we couldn't find the file: " + path);
         }
     }
 
