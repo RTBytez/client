@@ -13,7 +13,6 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
-import com.rtbytez.client.file.Line;
 import com.rtbytez.common.util.Console;
 
 import java.io.IOException;
@@ -25,22 +24,65 @@ public class Functions {
 
     }
 
-    public static void replace(String path, Line line) {
+    public static VirtualFile getVirtualFile(String path) {
         RTBytezClient client = RTBytezClient.getInstance();
-        VirtualFile virtualFile = ProjectRootManager.getInstance(client.getProject()).getContentRoots()[0].findFileByRelativePath(path);
+        return ProjectRootManager.getInstance(client.getProject()).getContentRoots()[0].findFileByRelativePath(path);
+    }
+
+    public static DocumentImpl getDocument(String path) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        VirtualFile virtualFile = getVirtualFile(path);
         if (virtualFile != null) {
             PsiFile psiFile = PsiManager.getInstance(client.getProject()).findFile(virtualFile);
-            DocumentImpl document = (DocumentImpl) PsiDocumentManager.getInstance(client.getProject()).getDocument(psiFile);
-            int lineStartOffset = document.getLineStartOffset(line.getLineNumber() - 1);
-            int lineEndOffset = document.getLineEndOffset(line.getLineNumber() - 1);
+            assert psiFile != null;
+            return (DocumentImpl) PsiDocumentManager.getInstance(client.getProject()).getDocument(psiFile);
+        }
+        return null;
+    }
+
+    public static void replace(String path, int lineNumber, String text) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        DocumentImpl document = getDocument(path);
+        if (document != null) {
+            int lineStartOffset = document.getLineStartOffset(lineNumber - 1);
+            int lineEndOffset = document.getLineEndOffset(lineNumber - 1);
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
-                client.getFileModTracker().addCache(virtualFile.getPath(), l);
-                document.replaceString(lineStartOffset, lineEndOffset, line.getText(), l, false);
+                client.getFileModTracker().addCache(getVirtualFile(path).getPath(), l);
+                document.replaceString(lineStartOffset, lineEndOffset, text, l, false);
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
             Console.log("REPLACER", "Couldn't find the file: " + path);
+        }
+    }
+
+    public static void addLine(String path, int afterLineNumber) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        DocumentImpl document = getDocument(path);
+        if (document != null) {
+            int offset = document.getLineEndOffset(afterLineNumber - 1);
+            WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
+                long l = LocalTimeCounter.currentTime();
+                client.getFileModTracker().addCache(getVirtualFile(path).getPath(), l);
+                document.replaceString(offset, offset, "\n", l, false);
+                PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
+            });
+        }
+    }
+
+    public static void removeLine(String path, int lineNumber) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        DocumentImpl document = getDocument(path);
+        if (document != null) {
+            int startingOffset = document.getLineStartOffset(lineNumber - 1);
+            int endingOffset = document.getLineEndOffset(lineNumber - 1);
+            WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
+                long l = LocalTimeCounter.currentTime();
+                client.getFileModTracker().addCache(getVirtualFile(path).getPath(), l);
+                document.replaceString(startingOffset, endingOffset, "", l, false);
+                PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
+            });
         }
     }
 
