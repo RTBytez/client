@@ -14,7 +14,6 @@ public class FileEventHandler extends PacketEventHandler {
     @Override
     public void exec(Peer peer, RTPacket packet) {
         RTBytezClient client = RTBytezClient.getInstance();
-
         if (packet instanceof RTPFileModifyLine) {
             RTPFileModifyLine rtp = (RTPFileModifyLine) packet;
             replace(rtp.getFilePath(), client.getLineMapper().lineNumberOf(rtp.getFilePath(), rtp.getLineId()), rtp.getText());
@@ -23,7 +22,7 @@ public class FileEventHandler extends PacketEventHandler {
         if (packet instanceof RTPFileAddLine) {
             RTPFileAddLine rtp = (RTPFileAddLine) packet;
             client.getLineMapper().addLine(rtp.getFilePath(), rtp.getLineId(), rtp.getLineNumber());
-            addLine(rtp.getFilePath(), rtp.getLineNumber() - 1);
+            addLine(rtp.getFilePath(), rtp.getLineNumber());
         }
 
         if (packet instanceof RTPFileRemoveLine) {

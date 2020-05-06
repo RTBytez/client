@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.testFramework.LightVirtualFile;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.comms.packets.file.request.RTPFileRequestAddLine;
 import com.rtbytez.common.comms.packets.file.request.RTPFileRequestModifyLine;
@@ -34,6 +35,9 @@ public class DocumentChangeHandler {
                     List<Integer> changedLines = new ArrayList<>();
                     Document document = event.getDocument();
                     VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+                    if (file instanceof LightVirtualFile) {
+                        return; // Ignore these files as they don't come from a true source
+                    }
                     String relPath = toRelPath(file.getPath());
                     assert file != null;
                     if (client.getFileModTracker().exists(relPath, document.getModificationStamp())) {
