@@ -4,8 +4,10 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.util.ui.components.BorderLayoutPanel;
+import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.client.actions.CredentialsGetter;
 import com.rtbytez.client.actions.URIGetter;
+import com.rtbytez.client.socket.SocketStatus;
 import com.rtbytez.client.ui.util.TreeController;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,9 +18,9 @@ public class RTBytezToolWindow {
 
     public JTree rTBytezTree;
     private final TreeController treeController = new TreeController(rTBytezTree);
-    public boolean isConnected = false;
-    public boolean isServerManager = true;
-    public boolean isRoomOperator = true;
+    public boolean isServerManager = false;
+    public boolean isRoomOperator = false;
+    private boolean isConnected = RTBytezClient.getInstance().getPeer().isConnected();
     private JPanel rTBytezToolWindowContent;
     private BorderLayoutPanel borderLayoutPanel;
     private JScrollPane scrollPane;
@@ -54,7 +56,8 @@ public class RTBytezToolWindow {
         AnAction disconnectButton = new AnAction("Disconnect", "Disconnect from RTBytez Server", AllIcons.Actions.Exit) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                isConnected = false;
+                RTBytezClient.getInstance().getPeer().setStatus(SocketStatus.DISCONNECTED);
+                isConnected = RTBytezClient.getInstance().getPeer().isConnected();
                 isRoomOperator = false;
                 isServerManager = false;
             }
