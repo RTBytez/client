@@ -61,7 +61,6 @@ public class RTBytezClient {
             instance = new RTBytezClient();
             instance.getVfsEventHandler().register();
             instance.getDocumentChangeHandler().register();
-            dummy();
             return instance;
         }
         return instance;

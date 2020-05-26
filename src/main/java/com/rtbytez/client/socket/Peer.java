@@ -13,6 +13,7 @@ import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.packets.PacketFactory;
 import com.rtbytez.common.comms.packets.RTPacketRequest;
 import com.rtbytez.common.comms.packets.auth.request.RTPAuthRequestLogin;
+import com.rtbytez.common.util.Console;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -26,21 +27,27 @@ public class Peer {
     private SocketStatus status;
     private String id;
     private String secret;
+    private boolean active;
 
     public void connect(String uriString) throws URISyntaxException {
-        URI uri = new URI(uriString);
-        socket = IO.socket(uri);
+        if (!active) {
+            active = true;
+            URI uri = new URI(uriString);
+            socket = IO.socket(uri);
 
-        register("file", new FileEventHandler());
-        register("room", new RoomEventHandler());
-        register("info", new InfoEventHandler());
+            register("file", new FileEventHandler());
+            register("room", new RoomEventHandler());
+            register("info", new InfoEventHandler());
 
-        register(Socket.EVENT_CONNECT, new ConnectEvent());
-        register(Socket.EVENT_CONNECTING, new ConnectingEvent());
-        register(Socket.EVENT_RECONNECTING, new ReconnectingEvent());
-        register(Socket.EVENT_DISCONNECT, new DisconnectedEvent());
+            register(Socket.EVENT_CONNECT, new ConnectEvent());
+            register(Socket.EVENT_CONNECTING, new ConnectingEvent());
+            register(Socket.EVENT_RECONNECTING, new ReconnectingEvent());
+            register(Socket.EVENT_DISCONNECT, new DisconnectedEvent());
 
-        socket.connect();
+            socket.connect();
+        } else {
+            Console.log("Socket", "A connection process has already begun!");
+        }
     }
 
     public void login(String username, String password, String host) {
