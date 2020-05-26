@@ -18,6 +18,8 @@ import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.util.Console;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 
 public class Functions {
@@ -121,5 +123,14 @@ public class Functions {
         String s = fullPath.substring(rootDirectory.length());
         Console.log("RELPATH", s);
         return s;
+    }
+
+    public static boolean isValidURI(String uri) {
+        try {
+            new URI(uri);
+        } catch (URISyntaxException e) {
+            return false;
+        }
+        return true;
     }
 }

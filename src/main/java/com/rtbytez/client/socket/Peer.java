@@ -9,20 +9,23 @@ import com.rtbytez.client.event.io.ConnectEvent;
 import com.rtbytez.client.event.io.ConnectingEvent;
 import com.rtbytez.client.event.io.DisconnectedEvent;
 import com.rtbytez.client.event.io.ReconnectingEvent;
+import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.packets.PacketFactory;
 import com.rtbytez.common.comms.packets.RTPacketRequest;
+import com.rtbytez.common.comms.packets.auth.request.RTPAuthRequestLogin;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Peer {
 
-    Socket socket;
-    SocketStatus status;
-    String id;
-    String secret;
+    private Socket socket;
+    private SocketStatus status;
+    private String id;
+    private String secret;
 
     public void connect(String uriString) throws URISyntaxException {
         URI uri = new URI(uriString);
@@ -40,8 +43,22 @@ public class Peer {
         socket.connect();
     }
 
-    public void login(String username, String password) {
+    public void login(String username, String password, String host) {
+        // URI checking should be done before we hit this point
+        assert Functions.isValidURI("http://" + host);
 
+        try { //Make IDEs happy
+            this.connect("http://" + host);
+        } catch (Exception ignored) {
+        }
+
+        String passwordHash = DigestUtils.sha1Hex(password);
+        register(Socket.EVENT_CONNECT, new SocketEventHandler() {
+            @Override
+            public void exec(Peer peer) {
+                peer.emit(new RTPAuthRequestLogin("auth", username, passwordHash));
+            }
+        });
     }
 
     public boolean isConnected() {
