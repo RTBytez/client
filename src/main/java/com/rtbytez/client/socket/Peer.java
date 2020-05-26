@@ -10,7 +10,7 @@ import com.rtbytez.client.event.io.ConnectingEvent;
 import com.rtbytez.client.event.io.DisconnectedEvent;
 import com.rtbytez.client.event.io.ReconnectingEvent;
 import com.rtbytez.common.comms.packets.PacketFactory;
-import com.rtbytez.common.comms.packets.RTPacket;
+import com.rtbytez.common.comms.packets.RTPacketRequest;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -56,7 +56,7 @@ public class Peer {
         socket.on(event, args -> handler.exec(this, PacketFactory.createPacket(event, String.valueOf(args[0]))));
     }
 
-    public void emit(RTPacket packet) {
+    public void emit(RTPacketRequest packet) {
         socket.emit(packet.getHeader(), packet.toJsonString());
     }
 
