@@ -47,11 +47,6 @@ public class Peer {
         // URI checking should be done before we hit this point
         assert Functions.isValidURI("http://" + host);
 
-        try { //Make IDEs happy
-            this.connect("http://" + host);
-        } catch (Exception ignored) {
-        }
-
         String passwordHash = DigestUtils.sha1Hex(password);
         register(Socket.EVENT_CONNECT, new SocketEventHandler() {
             @Override
@@ -59,6 +54,11 @@ public class Peer {
                 peer.emit(new RTPAuthRequestLogin("auth", username, passwordHash));
             }
         });
+
+        try { //Make IDEs happy
+            this.connect("http://" + host);
+        } catch (Exception ignored) {
+        }
     }
 
     public boolean isConnected() {
