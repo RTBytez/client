@@ -60,7 +60,7 @@ public class DocumentChangeHandler {
                         for (int i = changedLines.size() - 1; i >= 0; i--) {
                             Integer changedLine = changedLines.get(i);
                             client.getPeer().emit(new RTPFileRequestRemoveLine("file", relPath, client.getLineMapper().lineIdOf(relPath, changedLine)));
-                            client.getLineMapper().removeLine(relPath, changedLine);
+                            //client.getLineMapper().removeLine(relPath, changedLine);
                         }
                     } else {
                         int offset = event.getOffset();
@@ -70,7 +70,7 @@ public class DocumentChangeHandler {
                         int lastLine = newLength == 0 ? firstLine : document.getLineNumber(offset + newLength - 1);
 
                         for (int i = firstLine; i <= lastLine; i++) {
-                            client.getPeer().emit(new RTPFileRequestModifyLine("file", relPath, client.getLineMapper().lineIdOf(relPath, i), document.getText(new TextRange(document.getLineStartOffset(i), document.getLineEndOffset(i)))));
+                            client.getPeer().emit(new RTPFileRequestModifyLine("file", relPath, client.getLineMapper().lineIdOf(relPath, i + 1), document.getText(new TextRange(document.getLineStartOffset(i), document.getLineEndOffset(i)))));
                         }
                     }
                 }
