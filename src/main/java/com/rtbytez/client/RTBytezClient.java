@@ -7,6 +7,7 @@ import com.rtbytez.client.editor.VFSEventHandler;
 import com.rtbytez.client.file.LineMapper;
 import com.rtbytez.client.socket.Peer;
 import com.rtbytez.client.trackers.FileModTracker;
+import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestCreate;
 import com.rtbytez.common.util.Console;
 
@@ -40,6 +41,7 @@ public class RTBytezClient {
     }
 
     public static void dummy() {
+        Functions.getFilePaths();
         try {
             RTBytezClient.getInstance().getPeer().connect("http://localhost:5623");
             RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestCreate("room"));

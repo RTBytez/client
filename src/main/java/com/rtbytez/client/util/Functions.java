@@ -20,6 +20,10 @@ import com.rtbytez.common.util.Console;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Functions {
@@ -101,6 +105,7 @@ public class Functions {
     public static PsiFile psiFileFromString(String fileName) {
         Project project = RTBytezClient.getInstance().getProject();
         VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
+
         String regexString = "/|" + Pattern.quote(".");
         String[] splitFileName = fileName.split(regexString);
         String fileTypeExtension = splitFileName[splitFileName.length - 1];
@@ -111,10 +116,21 @@ public class Functions {
                 e.printStackTrace();
             }
         }
-        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-        PsiFile psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 2], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
-        PsiDirectoryFactory.getInstance(project).createDirectory(currentDirectory).add(psiFile);
-        return psiFile;
+        boolean duplicate = false;
+        for (VirtualFile v : currentDirectory.getChildren()) {
+            if (v.getName().equals(splitFileName[splitFileName.length - 2])) {
+                duplicate = true;
+            }
+        }
+        if (!duplicate) {
+            PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+            PsiFile psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 2], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+            PsiDirectoryFactory.getInstance(project).createDirectory(currentDirectory).add(psiFile);
+            return psiFile;
+        } else {
+            return null;
+        }
+
     }
 
     public static String toRelPath(String fullPath) {
@@ -133,4 +149,52 @@ public class Functions {
         }
         return true;
     }
+
+    public static String[] getFilePaths() {
+        ArrayList<String> filePaths = new ArrayList<>();
+        ArrayList<String> ignoredFiles = new ArrayList<>();
+        Set<VirtualFile> filesInProject = getFilesInProject();
+        for (VirtualFile v : filesInProject) {
+            if (v.getName().equals(".gitignore")) {
+                try {
+                    String ignoredFilesString = new String(v.contentsToByteArray());
+                    ignoredFilesString = ignoredFilesString.replace("\r", "").replace("\n", "").replace("//", "/");
+                    ignoredFiles.addAll(Arrays.asList(ignoredFilesString.split("/")));
+                } catch (IOException e) {
+                    System.out.println("oof");
+                }
+            }
+
+            filePaths.add(toRelPath(v.getPath()));
+        }
+        for (VirtualFile v : filesInProject) {
+            String s = v.getName();
+            if (ignoredFiles.contains(s)) {
+                filesInProject.remove(v);
+                System.out.println("Removed " + v.getName() + "!");
+            }
+        }
+        return (String[]) filePaths.toArray();
+    }
+
+    public static Set<VirtualFile> getFilesInProject() {
+        Set<VirtualFile> virtualFiles = new HashSet<>();
+        Project project = RTBytezClient.getInstance().getProject();
+        String basepath = ProjectRootManager.getInstance(project).getContentRoots()[0].getCanonicalPath() + "/";
+        VirtualFile virtualFile = getVirtualFile(toRelPath(basepath));
+        ArrayList<VirtualFile> toBeScanned = new ArrayList<>(Arrays.asList(virtualFile.getChildren()));
+        while (toBeScanned.size() != 0) {
+            VirtualFile v = toBeScanned.get(0);
+            if (v.getChildren().length == 0) {
+                virtualFiles.add(v);
+                toBeScanned.remove(v);
+            } else {
+                toBeScanned.addAll(Arrays.asList(v.getChildren()));
+                toBeScanned.remove(v);
+            }
+
+        }
+        return virtualFiles;
+    }
+
 }
