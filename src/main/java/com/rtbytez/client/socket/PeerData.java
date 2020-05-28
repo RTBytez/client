@@ -1,11 +1,15 @@
 package com.rtbytez.client.socket;
 
+import com.rtbytez.common.comms.enums.ServerRole;
+
 public class PeerData {
 
     String serverInstanceId;
     String roomId;
     String username;
     String secret;
+    int userId;
+    ServerRole serverRole;
 
     public String getServerInstanceId() {
         return serverInstanceId;
@@ -37,5 +41,21 @@ public class PeerData {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public ServerRole getServerRole() {
+        return serverRole;
+    }
+
+    public void setServerRole(ServerRole serverRole) {
+        this.serverRole = serverRole;
     }
 }

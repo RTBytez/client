@@ -13,4 +13,20 @@ public class ConnectionData {
         this.username = username;
         this.passwordHash = passwordHash;
     }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 }
