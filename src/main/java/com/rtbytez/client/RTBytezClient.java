@@ -18,7 +18,7 @@ public class RTBytezClient {
     private static boolean isInitialized = false;
 
     private final Project project;
-    private final VFSEventHandler vfsEventHandler = null;
+    private final VFSEventHandler vfsEventHandler;
     private final DocumentChangeHandler documentChangeHandler;
     private final FileModTracker fileModTracker;
     private final LineMapper lineMapper;
@@ -32,7 +32,7 @@ public class RTBytezClient {
      */
     private RTBytezClient() {
         this.project = ProjectManager.getInstance().getOpenProjects()[0];
-        //this.vfsEventHandler = new VFSEventHandler();
+        this.vfsEventHandler = new VFSEventHandler();
         this.documentChangeHandler = new DocumentChangeHandler();
         this.fileModTracker = new FileModTracker();
         this.lineMapper = new LineMapper();
