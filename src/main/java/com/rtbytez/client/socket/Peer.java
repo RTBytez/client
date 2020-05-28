@@ -13,6 +13,7 @@ import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.packets.PacketFactory;
 import com.rtbytez.common.comms.packets.RTPacketRequest;
 import com.rtbytez.common.comms.packets.auth.request.RTPAuthRequestLogin;
+import com.rtbytez.common.comms.packets.info.request.RTPInfoRequestDisconnection;
 import com.rtbytez.common.util.Console;
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -28,12 +29,14 @@ public class Peer {
     private String id;
     private String secret;
     private boolean active;
+    private PeerData peerData;
 
     public void connect(String uriString) throws URISyntaxException {
         if (!active) {
             active = true;
             URI uri = new URI(uriString);
             socket = IO.socket(uri);
+            peerData = new PeerData();
 
             register("file", new FileEventHandler());
             register("room", new RoomEventHandler());
@@ -81,6 +84,11 @@ public class Peer {
         }
     }
 
+    public void disconnect() {
+        this.emit(new RTPInfoRequestDisconnection("info"));
+        this.socket.disconnect();
+    }
+
     public boolean isConnected() {
         return this.status == SocketStatus.CONNECTED;
     }
@@ -122,5 +130,9 @@ public class Peer {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public PeerData getPeerData() {
+        return peerData;
     }
 }

@@ -23,18 +23,21 @@ public class FileEventHandler extends PacketEventHandler {
         if (packet instanceof RTPFileModifyLine) {
             RTPFileModifyLine rtp = (RTPFileModifyLine) packet;
             replace(rtp.getFilePath(), client.getLineMapper().lineNumberOf(rtp.getFilePath(), rtp.getLineId()), rtp.getText());
+            return;
         }
 
         if (packet instanceof RTPFileAddLine) {
             RTPFileAddLine rtp = (RTPFileAddLine) packet;
             client.getLineMapper().addLine(rtp.getFilePath(), rtp.getLineId(), rtp.getLineNumber());
             addLine(rtp.getFilePath(), rtp.getLineNumber());
+            return;
         }
 
         if (packet instanceof RTPFileRemoveLine) {
             RTPFileRemoveLine rtp = (RTPFileRemoveLine) packet;
             removeLine(rtp.getFilePath(), client.getLineMapper().lineNumberOf(rtp.getFilePath(), rtp.getLineId()));
             client.getLineMapper().removeLine(rtp.getFilePath(), rtp.getLineId());
+            return;
         }
 
         if (packet instanceof RTPFileHash) {
@@ -48,10 +51,12 @@ public class FileEventHandler extends PacketEventHandler {
                 Console.log("HASH", "Desynced with file: " + rtpFileHash.getFilePath());
                 peer.emit(new RTPFileRequestRetrieve("file", rtpFileHash.getFilePath()));
             }
+            return;
         }
 
         if (packet instanceof RTPFileRetrieve) {
             //TODO: Wait for Functions.getPsiFile() to return a psi file or creates one and then returns one if non exists at location
+            return;
         }
     }
 }
