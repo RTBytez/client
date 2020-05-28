@@ -54,6 +54,9 @@ public class Peer {
     }
 
     public boolean isConnected() {
+        if (status != null) {
+            System.out.println(status == SocketStatus.CONNECTED);
+        }
         return this.status == SocketStatus.CONNECTED;
     }
 
@@ -74,6 +77,7 @@ public class Peer {
     }
 
     public void setStatus(SocketStatus status) {
+        System.out.println("Set socket status to " + status.name());
         this.status = status;
     }
 
