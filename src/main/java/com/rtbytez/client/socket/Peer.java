@@ -44,6 +44,19 @@ public class Peer {
             register(Socket.EVENT_RECONNECTING, new ReconnectingEvent());
             register(Socket.EVENT_DISCONNECT, new DisconnectedEvent());
 
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception ignored) {
+                }
+                if (!this.isConnected()) {
+                    active = false;
+                    socket.disconnect();
+                    socket = null;
+                    Console.log("Socket", "Timed Out Connecting");
+                }
+            });
+
             socket.connect();
         } else {
             Console.log("Socket", "A connection process has already begun!");
@@ -89,6 +102,9 @@ public class Peer {
     }
 
     public void setStatus(SocketStatus status) {
+        if (status == SocketStatus.DISCONNECTED) {
+            active = false;
+        }
         this.status = status;
     }
 
