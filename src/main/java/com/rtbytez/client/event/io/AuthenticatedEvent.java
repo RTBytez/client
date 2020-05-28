@@ -5,6 +5,7 @@ import com.rtbytez.client.socket.Peer;
 import com.rtbytez.client.socket.SocketStatus;
 import com.rtbytez.common.comms.packets.info.request.RTPInfoRequestPeerInfo;
 import com.rtbytez.common.comms.packets.info.request.RTPInfoRequestServerInstanceId;
+import com.rtbytez.common.util.Console;
 
 public class AuthenticatedEvent extends SocketEventHandler {
     /**
@@ -12,6 +13,7 @@ public class AuthenticatedEvent extends SocketEventHandler {
      */
     @Override
     public void exec(Peer peer) {
+        Console.log("Socket", "Connected and authenticated with server!");
         peer.setStatus(SocketStatus.CONNECTED);
         peer.emit(new RTPInfoRequestPeerInfo("info"));
         peer.emit(new RTPInfoRequestServerInstanceId("info"));

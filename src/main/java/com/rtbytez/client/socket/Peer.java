@@ -2,6 +2,7 @@ package com.rtbytez.client.socket;
 
 import com.rtbytez.client.event.PacketEventHandler;
 import com.rtbytez.client.event.SocketEventHandler;
+import com.rtbytez.client.event.handlers.AuthEventHandler;
 import com.rtbytez.client.event.handlers.FileEventHandler;
 import com.rtbytez.client.event.handlers.InfoEventHandler;
 import com.rtbytez.client.event.handlers.RoomEventHandler;
@@ -26,7 +27,7 @@ public class Peer {
     private PeerData peerData;
 
     public void connect(ConnectionData connectionData) throws URISyntaxException {
-        if (this.connectionData != null) {
+        if (this.connectionData == null) {
             this.status = SocketStatus.DISCONNECTED;
             this.connectionData = connectionData;
             this.socket = IO.socket(new URI("http://" + connectionData.host + ":" + connectionData.port));
@@ -96,6 +97,7 @@ public class Peer {
         register("file", new FileEventHandler());
         register("room", new RoomEventHandler());
         register("info", new InfoEventHandler());
+        register("auth", new AuthEventHandler());
 
         register(Socket.EVENT_CONNECT, new ConnectEvent());
         register(Socket.EVENT_CONNECTING, new ConnectingEvent());

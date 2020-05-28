@@ -78,6 +78,11 @@ public class RTBytezClient {
         return peer;
     }
 
+    public void waitForConnected() {
+        while (!isOperational()) {
+        }
+    }
+
     /**
      * Retrieve the project that this client is initialized to
      */
