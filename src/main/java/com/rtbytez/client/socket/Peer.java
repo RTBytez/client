@@ -12,12 +12,10 @@ import com.rtbytez.client.event.io.ReconnectingEvent;
 import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.packets.PacketFactory;
 import com.rtbytez.common.comms.packets.RTPacketRequest;
-import com.rtbytez.common.comms.packets.auth.request.RTPAuthRequestLogin;
 import com.rtbytez.common.comms.packets.info.request.RTPInfoRequestDisconnection;
 import com.rtbytez.common.util.Console;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,60 +25,26 @@ public class Peer {
     private Socket socket;
     private SocketStatus status;
     private String id;
-    private String secret;
-    private boolean active;
+    private ConnectionData connectionData;
     private PeerData peerData;
 
-    public void connect(String uriString) throws URISyntaxException {
-        if (!active) {
-            active = true;
-            URI uri = new URI(uriString);
-            socket = IO.socket(uri);
-            peerData = new PeerData();
-
-            register("file", new FileEventHandler());
-            register("room", new RoomEventHandler());
-            register("info", new InfoEventHandler());
-
-            register(Socket.EVENT_CONNECT, new ConnectEvent());
-            register(Socket.EVENT_CONNECTING, new ConnectingEvent());
-            register(Socket.EVENT_RECONNECTING, new ReconnectingEvent());
-            register(Socket.EVENT_DISCONNECT, new DisconnectedEvent());
-
+    public void connect(ConnectionData connectionData) throws URISyntaxException {
+        if (this.connectionData != null) {
+            this.status = SocketStatus.DISCONNECTED;
+            this.connectionData = connectionData;
+            this.socket = IO.socket(new URI("http://" + connectionData.host + ":" + connectionData.port));
+            registerAll();
             new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                } catch (Exception ignored) {
-                }
+                Functions.safeSleep(5000L);
                 if (!this.isConnected()) {
-                    active = false;
                     socket.disconnect();
                     socket = null;
                     Console.log("Socket", "Timed Out Connecting");
                 }
-            });
-
+            }).start();
             socket.connect();
         } else {
             Console.log("Socket", "A connection process has already begun!");
-        }
-    }
-
-    public void login(String username, String password, String host) {
-        // URI checking should be done before we hit this point
-        assert Functions.isValidURI("http://" + host);
-
-        String passwordHash = DigestUtils.sha1Hex(password);
-        register(Socket.EVENT_CONNECT, new SocketEventHandler() {
-            @Override
-            public void exec(Peer peer) {
-                peer.emit(new RTPAuthRequestLogin("auth", username, passwordHash));
-            }
-        });
-
-        try { //Make IDEs happy
-            this.connect("http://" + host);
-        } catch (Exception ignored) {
         }
     }
 
@@ -110,9 +74,6 @@ public class Peer {
     }
 
     public void setStatus(SocketStatus status) {
-        if (status == SocketStatus.DISCONNECTED) {
-            active = false;
-        }
         this.status = status;
     }
 
@@ -124,15 +85,23 @@ public class Peer {
         this.id = id;
     }
 
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
     public PeerData getPeerData() {
         return peerData;
     }
+
+    public ConnectionData getConnectionData() {
+        return this.connectionData;
+    }
+
+    private void registerAll() {
+        register("file", new FileEventHandler());
+        register("room", new RoomEventHandler());
+        register("info", new InfoEventHandler());
+
+        register(Socket.EVENT_CONNECT, new ConnectEvent());
+        register(Socket.EVENT_CONNECTING, new ConnectingEvent());
+        register(Socket.EVENT_RECONNECTING, new ReconnectingEvent());
+        register(Socket.EVENT_DISCONNECT, new DisconnectedEvent());
+    }
+
 }

@@ -5,6 +5,7 @@ public class PeerData {
     String serverInstanceId;
     String roomId;
     String username;
+    String secret;
 
     public String getServerInstanceId() {
         return serverInstanceId;
@@ -28,5 +29,13 @@ public class PeerData {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }
