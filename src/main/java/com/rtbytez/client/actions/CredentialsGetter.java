@@ -11,7 +11,6 @@ public class CredentialsGetter extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-
     }
 
     public ArrayList<String> retrieveCredentials() {

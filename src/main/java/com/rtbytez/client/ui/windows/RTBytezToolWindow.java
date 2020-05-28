@@ -43,7 +43,6 @@ public class RTBytezToolWindow {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 URIGetter uriGetter = new URIGetter();
                 CredentialsGetter credentialsGetter = new CredentialsGetter();
-                String uri = uriGetter.retrieveURI();
                 ArrayList<String> credentials = credentialsGetter.retrieveCredentials();
                 isConnected = true;
             }
