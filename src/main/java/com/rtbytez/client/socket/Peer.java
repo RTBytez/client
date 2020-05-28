@@ -30,6 +30,7 @@ public class Peer {
             this.status = SocketStatus.DISCONNECTED;
             this.connectionData = connectionData;
             this.socket = IO.socket(new URI("http://" + connectionData.host + ":" + connectionData.port));
+            this.peerData = new PeerData();
             registerAll();
             new Thread(() -> {
                 Functions.safeSleep(5000L);
