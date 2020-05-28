@@ -50,17 +50,17 @@ public class TreeController {
         treeModel.reload();
     }
 
-    public void addMember(String membername) {
-        members.add(new DefaultMutableTreeNode(new CustomTreeNode(membername, AllIcons.General.User)));
+    public void addMember(String memberName) {
+        members.add(new DefaultMutableTreeNode(new CustomTreeNode(memberName, AllIcons.General.User)));
         treeModel.reload();
     }
 
-    public void deleteMember(String membername) {
+    public void deleteMember(String memberName) {
         DefaultMutableTreeNode curNode;
         for (int i = 0; i < members.getChildCount(); i++) {
             curNode = (DefaultMutableTreeNode) members.getChildAt(i);
             if (curNode.getUserObject() instanceof CustomTreeNode) {
-                if (((CustomTreeNode) curNode.getUserObject()).getName().equals(membername)) {
+                if (((CustomTreeNode) curNode.getUserObject()).getName().equals(memberName)) {
                     members.remove(curNode);
                     break;
                 }

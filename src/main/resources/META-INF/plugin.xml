@@ -29,6 +29,10 @@
         <action id="com.rtbytez.client.actions.URIGetter" class="com.rtbytez.client.actions.URIGetter" text="Connect">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
+        <action id="com.rtbytez.client.actions.DummyAction" class="com.rtbytez.client.actions.DummyAction"
+                text="RUN_DUMMY_ACTION" description="Runs the dummy action">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
     </actions>
 
 </idea-plugin>
