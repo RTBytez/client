@@ -5,10 +5,7 @@ import com.rtbytez.client.event.SocketEventHandler;
 import com.rtbytez.client.event.handlers.FileEventHandler;
 import com.rtbytez.client.event.handlers.InfoEventHandler;
 import com.rtbytez.client.event.handlers.RoomEventHandler;
-import com.rtbytez.client.event.io.ConnectEvent;
-import com.rtbytez.client.event.io.ConnectingEvent;
-import com.rtbytez.client.event.io.DisconnectedEvent;
-import com.rtbytez.client.event.io.ReconnectingEvent;
+import com.rtbytez.client.event.io.*;
 import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.packets.PacketFactory;
 import com.rtbytez.common.comms.packets.RTPacketRequest;
@@ -37,6 +34,7 @@ public class Peer {
             new Thread(() -> {
                 Functions.safeSleep(5000L);
                 if (!this.isConnected()) {
+                    new ConnectingTimedOutEvent().exec(this);
                     socket.disconnect();
                     socket = null;
                     Console.log("Socket", "Timed Out Connecting");
