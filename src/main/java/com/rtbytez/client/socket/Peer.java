@@ -27,8 +27,8 @@ public class Peer {
     private PeerData peerData;
 
     public void connect(ConnectionData connectionData) throws URISyntaxException {
-        if (this.connectionData == null) {
-            this.status = SocketStatus.DISCONNECTED;
+        if (this.status == null || this.status == SocketStatus.DISCONNECTED) {
+            this.status = SocketStatus.CONNECTING;
             this.connectionData = connectionData;
             this.socket = IO.socket(new URI("http://" + connectionData.host + ":" + connectionData.port));
             this.peerData = new PeerData();
