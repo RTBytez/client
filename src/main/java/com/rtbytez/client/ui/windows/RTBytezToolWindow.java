@@ -89,7 +89,6 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-
                 e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected());
             }
         };
