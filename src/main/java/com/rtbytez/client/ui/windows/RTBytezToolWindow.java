@@ -4,15 +4,14 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.util.ui.components.BorderLayoutPanel;
+import com.rtbytez.client.ConnectSanitizedInput;
 import com.rtbytez.client.RTBytezClient;
-import com.rtbytez.client.actions.CredentialsGetter;
-import com.rtbytez.client.actions.URIGetter;
-import com.rtbytez.client.socket.SocketStatus;
+import com.rtbytez.client.actions.ConnectDetailsGetter;
 import com.rtbytez.client.ui.util.TreeController;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
 
 public class RTBytezToolWindow {
 
@@ -41,21 +40,37 @@ public class RTBytezToolWindow {
         AnAction connectButton = new AnAction("Connect", "Connect to RTBytez Server", AllIcons.Actions.Execute) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                URIGetter uriGetter = new URIGetter();
-                CredentialsGetter credentialsGetter = new CredentialsGetter();
-                ArrayList<String> credentials = credentialsGetter.retrieveCredentials();
-                isConnected = true;
+                ConnectDetailsGetter connectDetailsGetter = new ConnectDetailsGetter();
+
+                ConnectSanitizedInput input = connectDetailsGetter.getConnectDetails();
+
+                if (!input.getPort().equals(null)) {
+                    try {
+                        RTBytezClient.getInstance().getPeer().connect(input.toConnectionData());
+                    } catch (URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    try {
+                        RTBytezClient.getInstance().getPeer().connect(input.toConnectionData());
+                        isConnected = RTBytezClient.getInstance().getPeer().isConnected();
+                    } catch (URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+
             }
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(!isConnected);
+                e.getPresentation().setVisible(!RTBytezClient.getInstance().getPeer().isConnected());
             }
         };
         AnAction disconnectButton = new AnAction("Disconnect", "Disconnect from RTBytez Server", AllIcons.Actions.Exit) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                RTBytezClient.getInstance().getPeer().setStatus(SocketStatus.DISCONNECTED);
+                RTBytezClient.getInstance().getPeer().disconnect();
                 isConnected = RTBytezClient.getInstance().getPeer().isConnected();
                 isRoomOperator = false;
                 isServerManager = false;
@@ -63,7 +78,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isConnected);
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected());
             }
         };
         AnAction refreshButton = new AnAction("Refresh", "Refresh", AllIcons.Actions.Refresh) {
@@ -74,7 +89,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isConnected);
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected());
             }
         };
         AnAction filesButton = new AnAction("Files", "Files", AllIcons.Nodes.CopyOfFolder) {
@@ -138,7 +153,7 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(isConnected);
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected());
             }
         };
         AnAction serverManagerButton = new AnAction("Server Manager", "Server manager", AllIcons.Actions.Lightning) {

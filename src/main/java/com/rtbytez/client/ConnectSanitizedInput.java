@@ -1,5 +1,7 @@
 package com.rtbytez.client;
 
+import com.rtbytez.client.socket.ConnectionData;
+
 public class ConnectSanitizedInput {
     private String host;
     private String username;
@@ -52,5 +54,9 @@ public class ConnectSanitizedInput {
                 ", port='" + port + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public ConnectionData toConnectionData() {
+        return new ConnectionData(getHost(), Integer.parseInt(getPort()), getUsername(), getPassword());
     }
 }
