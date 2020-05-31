@@ -197,4 +197,11 @@ public class Functions {
         return virtualFiles;
     }
 
+
+    public static void safeSleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ignored) {
+        }
+    }
 }

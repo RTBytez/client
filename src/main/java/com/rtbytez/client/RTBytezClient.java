@@ -5,6 +5,7 @@ import com.intellij.openapi.project.ProjectManager;
 import com.rtbytez.client.editor.DocumentChangeHandler;
 import com.rtbytez.client.editor.VFSEventHandler;
 import com.rtbytez.client.file.LineMapper;
+import com.rtbytez.client.socket.ConnectionData;
 import com.rtbytez.client.socket.Peer;
 import com.rtbytez.client.trackers.FileModTracker;
 import com.rtbytez.client.util.Functions;
@@ -43,7 +44,7 @@ public class RTBytezClient {
     public static void dummy() {
         Functions.getFilePaths();
         try {
-            RTBytezClient.getInstance().getPeer().connect("http://localhost:5623");
+            RTBytezClient.getInstance().getPeer().connect(new ConnectionData("127.0.0.1", 5623, "", ""));
             RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestCreate("room"));
             //RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("room", "262764f", ""));
         } catch (URISyntaxException e) {
@@ -63,7 +64,6 @@ public class RTBytezClient {
             instance = new RTBytezClient();
             instance.getVfsEventHandler().register();
             instance.getDocumentChangeHandler().register();
-            dummy();
             return instance;
         }
         return instance;

@@ -1,6 +1,8 @@
 package com.rtbytez.client.file;
 
 import com.intellij.util.containers.BidirectionalMap;
+import com.rtbytez.client.RTBytezClient;
+import com.rtbytez.common.comms.packets.file.request.RTPFileRequestHash;
 import com.rtbytez.common.util.Console;
 
 import java.util.HashMap;
@@ -26,6 +28,7 @@ public class LineMapper {
             return lineMaps.get(path).lineNumberOf(lineId);
         } catch (Error e) {
             Console.error("MAPPER", "Couldn't find map of " + e.getMessage() + " in file " + path);
+            RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestHash("file", path));
             return 0;
         }
     }
@@ -36,6 +39,7 @@ public class LineMapper {
             return lineMaps.get(path).lineIdOf(lineNumber);
         } catch (Error e) {
             Console.error("MAPPER", "Couldn't find map of " + e.getMessage() + " in file " + path);
+            RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestHash("file", path));
             return "";
         }
     }

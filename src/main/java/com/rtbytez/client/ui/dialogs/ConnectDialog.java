@@ -1,6 +1,8 @@
 package com.rtbytez.client.ui.dialogs;
 
 import com.intellij.openapi.ui.DialogWrapper;
+import com.rtbytez.client.ConnectSanitizedInput;
+import com.rtbytez.client.InputSanitizer;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -29,11 +31,11 @@ public class ConnectDialog extends DialogWrapper {
         return dialog;
     }
 
-
-    public String getUriText() {
-        createCenterPanel();
-        return uri.getText();
+    public ConnectSanitizedInput getUriText() {
+        InputSanitizer sanitizer = new InputSanitizer();
+        String input = uri.getText();
+        ConnectSanitizedInput connectSanitizedInput = sanitizer.sanitizeInputs(input);
+        return connectSanitizedInput;
     }
-
 }
 

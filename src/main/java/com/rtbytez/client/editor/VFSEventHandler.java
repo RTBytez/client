@@ -1,15 +1,11 @@
 package com.rtbytez.client.editor;
 
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.util.messages.MessageBus;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.comms.packets.file.request.RTPFileRequestAddLine;
@@ -44,12 +40,12 @@ public class VFSEventHandler {
                         String path = toRelPath(vFileDeleteEvent.getPath());
                         client.getPeer().emit(new RTPFileRequestDelete("file", path));
                     }
-                    assert vFileEvent.getFile() != null;
-                    PsiFile psiFile = PsiManager.getInstance(project).findFile(vFileEvent.getFile());
-                    assert psiFile != null;
-                    Document document = PsiDocumentManager.getInstance(project).getDocument(psiFile);
-                    assert document != null;
-                    System.out.println(document.getText().replaceAll("\n", "\\\\n"));
+                    //assert vFileEvent.getFile() != null;
+                    //PsiFile psiFile = PsiManager.getInstance(project).findFile(vFileEvent.getFile());
+                    //assert psiFile != null;
+                    //Document document = PsiDocumentManager.getInstance(project).getDocument(psiFile);
+                    //assert document != null;
+                    //System.out.println(document.getText().replaceAll("\n", "\\\\n"));
                 });
             }
         });
