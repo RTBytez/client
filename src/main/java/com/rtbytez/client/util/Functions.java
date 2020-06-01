@@ -8,15 +8,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.PsiManager;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.util.Console;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -116,18 +116,17 @@ public class Functions {
             for (int i = 0; i < splitFileName.length - 1; i++) {
                 try {
                     ArrayList<String> fileNames = new ArrayList<>();
-                    for(VirtualFile v : currentDirectory.getChildren()){
+                    for (VirtualFile v : currentDirectory.getChildren()) {
                         fileNames.add(v.getName());
                     }
-                    if(!fileNames.contains(splitFileName[i])){
+                    if (!fileNames.contains(splitFileName[i])) {
                         currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
-                    }
-                    else{
-                       for(VirtualFile v: currentDirectory.getChildren()){
-                           if(splitFileName[i].equals(v.getName())){
-                               currentDirectory = v;
-                           }
-                       }
+                    } else {
+                        for (VirtualFile v : currentDirectory.getChildren()) {
+                            if (splitFileName[i].equals(v.getName())) {
+                                currentDirectory = v;
+                            }
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -165,10 +164,10 @@ public class Functions {
         for (VirtualFile v : filesInProject) {
             if (v.getName().equals(".gitignore")) {
                 try {
-                    String path =  toRelPath(v.getPath().substring(0, v.getPath().length() - 10));
+                    String path = toRelPath(v.getPath().substring(0, v.getPath().length() - 10));
                     String ignoredFilesString = new String(v.contentsToByteArray());
                     ignoredFilesString = ignoredFilesString.replace("\r", "").replace("\n", "").replace("//", "/");
-                    for(String s : ignoredFilesString.split("/")){
+                    for (String s : ignoredFilesString.split("/")) {
                         ignoredFiles.add(path + s);
                     }
                 } catch (IOException e) {
@@ -186,7 +185,7 @@ public class Functions {
             }
         }
         String[] filePathsArray = new String[filePaths.size()];
-        for(int i = 0; i < filePaths.size(); i++){
+        for (int i = 0; i < filePaths.size(); i++) {
             filePathsArray[i] = filePaths.get(i);
         }
         return filePathsArray;
