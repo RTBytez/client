@@ -38,7 +38,8 @@ public class Functions {
     }
 
     public static PsiFile getPsiFile(VirtualFile virtualFile) {
-        return ApplicationManager.getApplication().runReadAction((Computable<PsiFile>) () -> PsiManager.getInstance(RTBytezClient.getInstance().getProject()).findFile(virtualFile));
+        return ApplicationManager.getApplication().runReadAction((Computable<PsiFile>) () ->
+                PsiManager.getInstance(RTBytezClient.getInstance().getProject()).findFile(virtualFile));
     }
 
     public static DocumentImpl getDocument(String path) {
@@ -62,7 +63,8 @@ public class Functions {
                 lineStartOffset = document.getLineStartOffset(lineNumber - 1);
                 lineEndOffset = document.getLineEndOffset(lineNumber - 1);
             } catch (Exception e) {
-                Console.log("DOCUMENT_EDITOR", "File " + path + " is clearly not up-to-date with server... creating desync request.");
+                Console.log("DOCUMENT_EDITOR", "File " + path +
+                        " is clearly not up-to-date with server... creating desync request.");
                 RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestRetrieve("file", path));
                 return;
             }
@@ -73,7 +75,8 @@ public class Functions {
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
-            Console.log("DOCUMENT_EDITOR", "Couldn't run a replacement because we couldn't find the file: " + path);
+            Console.log("DOCUMENT_EDITOR",
+                    "Couldn't run a replacement because we couldn't find the file: " + path);
         }
     }
 
@@ -87,11 +90,13 @@ public class Functions {
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
-                document.replaceString(0, document.getLineEndOffset(document.getLineCount() - 1), "", l, true);
+                document.replaceString(0, document.getLineEndOffset(document.getLineCount() - 1),
+                        "", l, true);
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
-            Console.log("DOCUMENT_EDITOR", "Couldn't wipe file because we couldn't find the file: " + path);
+            Console.log("DOCUMENT_EDITOR", "Couldn't wipe file because we couldn't find the file: "
+                    + path);
         }
     }
 
@@ -112,7 +117,8 @@ public class Functions {
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
-            Console.log("DOCUMENT_EDITOR", "Couldn't add a line because we couldn't find the file: " + path);
+            Console.log("DOCUMENT_EDITOR", "Couldn't add a line because we couldn't find the file: "
+                    + path);
         }
     }
 
@@ -133,7 +139,8 @@ public class Functions {
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
-            Console.log("DOCUMENT_EDITOR", "Couldn't remove a line because we couldn't find the file: " + path);
+            Console.log("DOCUMENT_EDITOR", "Couldn't remove a line because we couldn't find the file: "
+                    + path);
         }
     }
 
@@ -170,7 +177,8 @@ public class Functions {
             PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
             System.out.println(FileTypeManager.getInstance().getStdFileType("Type:" + fileTypeExtension));
             PsiFile psiFile;
-            psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+            psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1],
+                    FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
             PsiManager.getInstance(project).findDirectory(currentDirectory).add(psiFile);
             return psiFile;
         });
@@ -245,7 +253,7 @@ public class Functions {
 
         }
         String[] filePathsArray = new String[filePaths.size()];
-        for(int i = 0; i < filePaths.size(); i++){
+        for (int i = 0; i < filePaths.size(); i++) {
             filePathsArray[i] = filePaths.get(i);
         }
         return filePathsArray;
