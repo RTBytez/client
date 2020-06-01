@@ -8,19 +8,22 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.PsiManager;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
+import com.rtbytez.common.comms.packets.file.request.RTPFileRequestRetrieve;
 import com.rtbytez.common.util.Console;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Functions {
@@ -53,8 +56,16 @@ public class Functions {
         RTBytezClient client = RTBytezClient.getInstance();
         DocumentImpl document = getDocument(path);
         if (document != null) {
-            int lineStartOffset = document.getLineStartOffset(lineNumber - 1);
-            int lineEndOffset = document.getLineEndOffset(lineNumber - 1);
+            int lineStartOffset;
+            int lineEndOffset;
+            try {
+                lineStartOffset = document.getLineStartOffset(lineNumber - 1);
+                lineEndOffset = document.getLineEndOffset(lineNumber - 1);
+            } catch (Exception e) {
+                Console.log("DOCUMENT_EDITOR", "File " + path + " is clearly not up-to-date with server... creating desync request.");
+                RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestRetrieve("file", path));
+                return;
+            }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
@@ -66,20 +77,47 @@ public class Functions {
         }
     }
 
-    public static void addLine(String path, int afterLineNumber) {
+    public static void wipeFile(String path) {
         RTBytezClient client = RTBytezClient.getInstance();
         DocumentImpl document = getDocument(path);
         if (document != null) {
-            int offset = document.getLineEndOffset(afterLineNumber);
+            if (document.getLineCount() == 0) {
+                return;
+            }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
-                document.replaceString(offset, offset, "\n", l, false);
+                document.replaceString(0, document.getLineEndOffset(document.getLineCount() - 1), "", l, true);
+                PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
+            });
+        } else {
+            Console.log("DOCUMENT_EDITOR", "Couldn't wipe file because we couldn't find the file: " + path);
+        }
+    }
+
+    public static void addLine(String path, int afterLineNumber, String text) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        DocumentImpl document = getDocument(path);
+        if (document != null) {
+            int offset;
+            if (afterLineNumber == 0 || document.getLineCount() == 0) {
+                offset = 0;
+            } else {
+                offset = document.getLineEndOffset(afterLineNumber);
+            }
+            WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
+                long l = LocalTimeCounter.currentTime();
+                client.getFileModTracker().addCache(path, l);
+                document.replaceString(offset, offset, "\n" + text, l, false);
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
             Console.log("DOCUMENT_EDITOR", "Couldn't add a line because we couldn't find the file: " + path);
         }
+    }
+
+    public static void addLine(String path, int afterLineNumber) {
+        addLine(path, afterLineNumber, "");
     }
 
     public static void removeLine(String path, int lineNumber) {
@@ -105,29 +143,25 @@ public class Functions {
             return getPsiFile(file);
         }
         Project project = RTBytezClient.getInstance().getProject();
-        AtomicReference<PsiFile> psiFile = new AtomicReference<>();
         return ApplicationManager.getApplication().runWriteAction((Computable<PsiFile>) () -> {
-
             VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
-
             String regexString = "/";
             String[] splitFileName = path.split(regexString);
             String fileTypeExtension = splitFileName[splitFileName.length - 1].split(Pattern.quote("."))[1];
             for (int i = 0; i < splitFileName.length - 1; i++) {
                 try {
                     ArrayList<String> fileNames = new ArrayList<>();
-                    for(VirtualFile v : currentDirectory.getChildren()){
+                    for (VirtualFile v : currentDirectory.getChildren()) {
                         fileNames.add(v.getName());
                     }
-                    if(!fileNames.contains(splitFileName[i])){
+                    if (!fileNames.contains(splitFileName[i])) {
                         currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
-                    }
-                    else{
-                       for(VirtualFile v: currentDirectory.getChildren()){
-                           if(splitFileName[i].equals(v.getName())){
-                               currentDirectory = v;
-                           }
-                       }
+                    } else {
+                        for (VirtualFile v : currentDirectory.getChildren()) {
+                            if (splitFileName[i].equals(v.getName())) {
+                                currentDirectory = v;
+                            }
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -135,9 +169,10 @@ public class Functions {
             }
             PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
             System.out.println(FileTypeManager.getInstance().getStdFileType("Type:" + fileTypeExtension));
-            psiFile.set(psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), ""));
-            Objects.requireNonNull(PsiManager.getInstance(project).findDirectory(currentDirectory)).add(psiFile.get());
-            return psiFile.get();
+            PsiFile psiFile;
+            psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+            PsiManager.getInstance(project).findDirectory(currentDirectory).add(psiFile);
+            return psiFile;
         });
     }
 
