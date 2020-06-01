@@ -43,6 +43,7 @@ public class RTBytezClient {
     }
 
     public static void dummy() {
+        System.out.println(Arrays.toString(Functions.getFilePaths()));
         try {
             RTBytezClient.getInstance().getPeer().connect(new ConnectionData("127.0.0.1", 5623, "", ""));
             RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestCreate("room"));

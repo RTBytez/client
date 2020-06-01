@@ -8,15 +8,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.PsiManager;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.util.Console;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -165,11 +165,14 @@ public class Functions {
         for (VirtualFile v : filesInProject) {
             if (v.getName().equals(".gitignore")) {
                 try {
-                    String path =  toRelPath(v.getPath().substring(0, v.getPath().length() - 10));
+                    String path = toRelPath(v.getPath().substring(0, v.getPath().length() - 11));
                     String ignoredFilesString = new String(v.contentsToByteArray());
-                    ignoredFilesString = ignoredFilesString.replace("\r", "").replace("\n", "").replace("//", "/");
-                    for(String s : ignoredFilesString.split("/")){
-                        ignoredFiles.add(path + s);
+                    for (String s : ignoredFilesString.split("\r\n")) {
+                        if (s.charAt(0) == '/') {
+                            ignoredFiles.add(path + s);
+                        } else {
+                            ignoredFiles.add(s);
+                        }
                     }
                 } catch (IOException e) {
                     System.out.println("oof");
@@ -180,10 +183,31 @@ public class Functions {
         }
         for (VirtualFile v : filesInProject) {
             String s = toRelPath(v.getPath());
-            if (ignoredFiles.contains(s) || ignoredFiles.contains(v.getName())) {
+            if (ignoredFiles.contains(s)) {
                 filePaths.remove(s);
                 System.out.println("Removed " + v.getName() + "!");
             }
+            for (String filePath : ignoredFiles) {
+                if (filePaths.contains(filePath)) {
+                    filePaths.remove(filePath);
+                } else if (filePath.contains("**")) {
+                    String[] startAndEnd = filePath.split(Pattern.quote("**"));
+                    String start = startAndEnd[0];
+                    String end = startAndEnd[1];
+                    filePaths.removeIf(file -> file.contains(start) && file.contains(end));
+                } else if (filePath.contains("*.")) {
+                    String[] startAndEnd = filePath.split(Pattern.quote("*"));
+                    String start = startAndEnd[0];
+                    String end = startAndEnd[1];
+                    filePaths.removeIf(file -> file.contains(start) && file.contains(end));
+                } else if (filePath.contains(".*")) {
+                    String[] startAndEnd = filePath.split(Pattern.quote("."));
+                    String start = startAndEnd[0];
+                    String end = startAndEnd[1];
+                    filePaths.removeIf(file -> file.contains(start) && file.contains(end));
+                }
+            }
+
         }
         String[] filePathsArray = new String[filePaths.size()];
         for(int i = 0; i < filePaths.size(); i++){
