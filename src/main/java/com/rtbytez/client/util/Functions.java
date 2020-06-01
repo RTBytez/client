@@ -14,6 +14,7 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
+import com.rtbytez.common.comms.packets.file.request.RTPFileRequestRetrieve;
 import com.rtbytez.common.util.Console;
 
 import java.io.IOException;
@@ -55,8 +56,16 @@ public class Functions {
         RTBytezClient client = RTBytezClient.getInstance();
         DocumentImpl document = getDocument(path);
         if (document != null) {
-            int lineStartOffset = document.getLineStartOffset(lineNumber - 1);
-            int lineEndOffset = document.getLineEndOffset(lineNumber - 1);
+            int lineStartOffset;
+            int lineEndOffset;
+            try {
+                lineStartOffset = document.getLineStartOffset(lineNumber - 1);
+                lineEndOffset = document.getLineEndOffset(lineNumber - 1);
+            } catch (Exception e) {
+                Console.log("DOCUMENT_EDITOR", "File " + path + " is clearly not up-to-date with server... creating desync request.");
+                RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestRetrieve("file", path));
+                return;
+            }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
@@ -72,6 +81,9 @@ public class Functions {
         RTBytezClient client = RTBytezClient.getInstance();
         DocumentImpl document = getDocument(path);
         if (document != null) {
+            if (document.getLineCount() == 0) {
+                return;
+            }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
@@ -88,7 +100,7 @@ public class Functions {
         DocumentImpl document = getDocument(path);
         if (document != null) {
             int offset;
-            if (afterLineNumber == 0) {
+            if (afterLineNumber == 0 || document.getLineCount() == 0) {
                 offset = 0;
             } else {
                 offset = document.getLineEndOffset(afterLineNumber);
@@ -96,7 +108,7 @@ public class Functions {
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
-                document.replaceString(offset, offset, "\n", l, false);
+                document.replaceString(offset, offset, "\n" + text, l, false);
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
