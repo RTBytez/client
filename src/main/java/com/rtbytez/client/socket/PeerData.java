@@ -2,14 +2,19 @@ package com.rtbytez.client.socket;
 
 import com.rtbytez.common.comms.enums.ServerRole;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PeerData {
 
     String serverInstanceId;
-    String roomId;
     String username;
     String secret;
     int userId;
     ServerRole serverRole;
+
+    String roomId;
+    List<PeerObject> roomMembers = new ArrayList<>();
 
     public String getServerInstanceId() {
         return serverInstanceId;
@@ -57,5 +62,13 @@ public class PeerData {
 
     public void setServerRole(ServerRole serverRole) {
         this.serverRole = serverRole;
+    }
+
+    public boolean isInRoom() {
+        return !this.roomId.isEmpty();
+    }
+
+    public List<PeerObject> getRoomMembers() {
+        return roomMembers;
     }
 }
