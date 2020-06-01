@@ -8,15 +8,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.util.Console;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -183,7 +183,7 @@ public class Functions {
         }
         for (VirtualFile v : filesInProject) {
             String s = toRelPath(v.getPath());
-            if (ignoredFiles.contains(s)) {
+            if (ignoredFiles.contains(s) || ignoredFiles.contains(v.getName())) {
                 filePaths.remove(s);
                 System.out.println("Removed " + v.getName() + "!");
             }
