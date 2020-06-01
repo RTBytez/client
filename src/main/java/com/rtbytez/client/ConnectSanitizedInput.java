@@ -11,7 +11,11 @@ public class ConnectSanitizedInput {
     public ConnectSanitizedInput(String host, String port, String username) {
         this.host = host;
         this.username = username;
-        this.port = port;
+        if (port == null) {
+            this.port = Integer.toString(5623);
+        } else {
+            this.port = port;
+        }
     }
 
     public String getUsername() {

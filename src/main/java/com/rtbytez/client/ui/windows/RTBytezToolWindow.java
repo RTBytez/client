@@ -44,7 +44,7 @@ public class RTBytezToolWindow {
 
                 ConnectSanitizedInput input = connectDetailsGetter.getConnectDetails();
 
-                if (!input.getPort().equals(null)) {
+                if (input.getPort() != null) {
                     try {
                         RTBytezClient.getInstance().getPeer().connect(input.toConnectionData());
                     } catch (URISyntaxException ex) {

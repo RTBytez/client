@@ -1,8 +1,5 @@
 package com.rtbytez.client;
 
-import org.apache.commons.validator.routines.DomainValidator;
-import org.apache.commons.validator.routines.InetAddressValidator;
-
 public class InputSanitizer {
     private String username = null;
     private String host = null;
@@ -30,9 +27,6 @@ public class InputSanitizer {
         return new ConnectSanitizedInput(host, port, username);
     }
 
-    public boolean validateHost(String host) {
-        return (DomainValidator.getInstance().isValid(host) || InetAddressValidator.getInstance().isValid(host));
-    }
 
 }
 
