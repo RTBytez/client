@@ -19,8 +19,10 @@ import com.rtbytez.common.util.Console;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Functions {
@@ -105,11 +107,8 @@ public class Functions {
             return getPsiFile(file);
         }
         Project project = RTBytezClient.getInstance().getProject();
-        AtomicReference<PsiFile> psiFile = new AtomicReference<>();
         return ApplicationManager.getApplication().runWriteAction((Computable<PsiFile>) () -> {
-
             VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
-
             String regexString = "/";
             String[] splitFileName = path.split(regexString);
             String fileTypeExtension = splitFileName[splitFileName.length - 1].split(Pattern.quote("."))[1];
@@ -134,9 +133,10 @@ public class Functions {
             }
             PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
             System.out.println(FileTypeManager.getInstance().getStdFileType("Type:" + fileTypeExtension));
-            psiFile.set(psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), ""));
-            Objects.requireNonNull(PsiManager.getInstance(project).findDirectory(currentDirectory)).add(psiFile.get());
-            return psiFile.get();
+            PsiFile psiFile;
+            psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+            PsiManager.getInstance(project).findDirectory(currentDirectory).add(psiFile);
+            return psiFile;
         });
     }
 
