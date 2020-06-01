@@ -8,22 +8,19 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.common.util.Console;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 public class Functions {
@@ -102,35 +99,46 @@ public class Functions {
         }
     }
 
-    public static PsiFile psiFileFromString(String fileName) {
+    public static PsiFile psiFileFromString(String path) {
+        VirtualFile file = getVirtualFile(path);
+        if (file != null) {
+            return getPsiFile(file);
+        }
         Project project = RTBytezClient.getInstance().getProject();
-        VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
+        AtomicReference<PsiFile> psiFile = new AtomicReference<>();
+        return ApplicationManager.getApplication().runWriteAction((Computable<PsiFile>) () -> {
 
-        String regexString = "/|" + Pattern.quote(".");
-        String[] splitFileName = fileName.split(regexString);
-        String fileTypeExtension = splitFileName[splitFileName.length - 1];
-        for (int i = 0; i < splitFileName.length - 2; i++) {
-            try {
-                currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
-            } catch (IOException e) {
-                e.printStackTrace();
+            VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
+
+            String regexString = "/";
+            String[] splitFileName = path.split(regexString);
+            String fileTypeExtension = splitFileName[splitFileName.length - 1].split(Pattern.quote("."))[1];
+            for (int i = 0; i < splitFileName.length - 1; i++) {
+                try {
+                    ArrayList<String> fileNames = new ArrayList<>();
+                    for(VirtualFile v : currentDirectory.getChildren()){
+                        fileNames.add(v.getName());
+                    }
+                    if(!fileNames.contains(splitFileName[i])){
+                        currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
+                    }
+                    else{
+                       for(VirtualFile v: currentDirectory.getChildren()){
+                           if(splitFileName[i].equals(v.getName())){
+                               currentDirectory = v;
+                           }
+                       }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        boolean duplicate = false;
-        for (VirtualFile v : currentDirectory.getChildren()) {
-            if (v.getName().equals(splitFileName[splitFileName.length - 2])) {
-                duplicate = true;
-            }
-        }
-        if (!duplicate) {
             PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-            PsiFile psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 2], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
-            PsiDirectoryFactory.getInstance(project).createDirectory(currentDirectory).add(psiFile);
-            return psiFile;
-        } else {
-            return null;
-        }
-
+            System.out.println(FileTypeManager.getInstance().getStdFileType("Type:" + fileTypeExtension));
+            psiFile.set(psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), ""));
+            Objects.requireNonNull(PsiManager.getInstance(project).findDirectory(currentDirectory)).add(psiFile.get());
+            return psiFile.get();
+        });
     }
 
     public static String toRelPath(String fullPath) {
@@ -157,9 +165,12 @@ public class Functions {
         for (VirtualFile v : filesInProject) {
             if (v.getName().equals(".gitignore")) {
                 try {
+                    String path =  toRelPath(v.getPath().substring(0, v.getPath().length() - 10));
                     String ignoredFilesString = new String(v.contentsToByteArray());
                     ignoredFilesString = ignoredFilesString.replace("\r", "").replace("\n", "").replace("//", "/");
-                    ignoredFiles.addAll(Arrays.asList(ignoredFilesString.split("/")));
+                    for(String s : ignoredFilesString.split("/")){
+                        ignoredFiles.add(path + s);
+                    }
                 } catch (IOException e) {
                     System.out.println("oof");
                 }
@@ -168,13 +179,17 @@ public class Functions {
             filePaths.add(toRelPath(v.getPath()));
         }
         for (VirtualFile v : filesInProject) {
-            String s = v.getName();
-            if (ignoredFiles.contains(s)) {
-                filesInProject.remove(v);
+            String s = toRelPath(v.getPath());
+            if (ignoredFiles.contains(s) || ignoredFiles.contains(v.getName())) {
+                filePaths.remove(s);
                 System.out.println("Removed " + v.getName() + "!");
             }
         }
-        return (String[]) filePaths.toArray();
+        String[] filePathsArray = new String[filePaths.size()];
+        for(int i = 0; i < filePaths.size(); i++){
+            filePathsArray[i] = filePaths.get(i);
+        }
+        return filePathsArray;
     }
 
     public static Set<VirtualFile> getFilesInProject() {

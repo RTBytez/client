@@ -13,6 +13,7 @@ import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestCreate;
 import com.rtbytez.common.util.Console;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 public class RTBytezClient {
 
@@ -42,7 +43,6 @@ public class RTBytezClient {
     }
 
     public static void dummy() {
-        Functions.getFilePaths();
         try {
             RTBytezClient.getInstance().getPeer().connect(new ConnectionData("127.0.0.1", 5623, "", ""));
             RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestCreate("room"));
