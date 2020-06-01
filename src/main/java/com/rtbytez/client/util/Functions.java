@@ -68,11 +68,31 @@ public class Functions {
         }
     }
 
-    public static void addLine(String path, int afterLineNumber) {
+    public static void wipeFile(String path) {
         RTBytezClient client = RTBytezClient.getInstance();
         DocumentImpl document = getDocument(path);
         if (document != null) {
-            int offset = document.getLineEndOffset(afterLineNumber);
+            WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
+                long l = LocalTimeCounter.currentTime();
+                client.getFileModTracker().addCache(path, l);
+                document.replaceString(0, document.getLineEndOffset(document.getLineCount() - 1), "", l, true);
+                PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
+            });
+        } else {
+            Console.log("DOCUMENT_EDITOR", "Couldn't wipe file because we couldn't find the file: " + path);
+        }
+    }
+
+    public static void addLine(String path, int afterLineNumber, String text) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        DocumentImpl document = getDocument(path);
+        if (document != null) {
+            int offset;
+            if (afterLineNumber == 0) {
+                offset = 0;
+            } else {
+                offset = document.getLineEndOffset(afterLineNumber);
+            }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
@@ -82,6 +102,10 @@ public class Functions {
         } else {
             Console.log("DOCUMENT_EDITOR", "Couldn't add a line because we couldn't find the file: " + path);
         }
+    }
+
+    public static void addLine(String path, int afterLineNumber) {
+        addLine(path, afterLineNumber, "");
     }
 
     public static void removeLine(String path, int lineNumber) {

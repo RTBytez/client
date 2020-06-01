@@ -9,11 +9,8 @@ import com.rtbytez.client.socket.ConnectionData;
 import com.rtbytez.client.socket.Peer;
 import com.rtbytez.client.trackers.FileModTracker;
 import com.rtbytez.client.util.Functions;
-import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestCreate;
+import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestJoin;
 import com.rtbytez.common.util.Console;
-
-import java.net.URISyntaxException;
-import java.util.Arrays;
 
 public class RTBytezClient {
 
@@ -45,9 +42,10 @@ public class RTBytezClient {
     public static void dummy() {
         try {
             RTBytezClient.getInstance().getPeer().connect(new ConnectionData("127.0.0.1", 5623, "", ""));
-            RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestCreate("room"));
+            RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("room", "000000", ""));
+            Functions.psiFileFromString("foo.bar.txt");
             //RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("room", "262764f", ""));
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Console.log("Ran dummy test code");
