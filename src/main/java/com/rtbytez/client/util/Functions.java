@@ -1,12 +1,14 @@
 package com.rtbytez.client.util;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.impl.DocumentImpl;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
+import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
@@ -108,7 +110,7 @@ public class Functions {
             if (afterLineNumber == 0 || document.getLineCount() == 0) {
                 offset = 0;
             } else {
-                offset = document.getLineEndOffset(afterLineNumber);
+                offset = document.getLineEndOffset(afterLineNumber - 1);
             }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
@@ -150,7 +152,7 @@ public class Functions {
             return getPsiFile(file);
         }
         Project project = RTBytezClient.getInstance().getProject();
-        return ApplicationManager.getApplication().runWriteAction((Computable<PsiFile>) () -> {
+        return WriteAction.computeAndWait((ThrowableComputable<PsiFile, Error>) () -> {
             VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
             String regexString = "/";
             String[] splitFileName = path.split(regexString);
@@ -182,6 +184,38 @@ public class Functions {
             PsiManager.getInstance(project).findDirectory(currentDirectory).add(psiFile);
             return psiFile;
         });
+        //return ApplicationManager.getApplication().runWriteAction((Computable<PsiFile>) () -> {
+        //    VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
+        //    String regexString = "/";
+        //    String[] splitFileName = path.split(regexString);
+        //    String fileTypeExtension = splitFileName[splitFileName.length - 1].split(Pattern.quote("."))[1];
+        //    for (int i = 0; i < splitFileName.length - 1; i++) {
+        //        try {
+        //            ArrayList<String> fileNames = new ArrayList<>();
+        //            for (VirtualFile v : currentDirectory.getChildren()) {
+        //                fileNames.add(v.getName());
+        //            }
+        //            if (!fileNames.contains(splitFileName[i])) {
+        //                currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
+        //            } else {
+        //                for (VirtualFile v : currentDirectory.getChildren()) {
+        //                    if (splitFileName[i].equals(v.getName())) {
+        //                        currentDirectory = v;
+        //                    }
+        //                }
+        //            }
+        //        } catch (IOException e) {
+        //            e.printStackTrace();
+        //        }
+        //    }
+        //    PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+        //    System.out.println(FileTypeManager.getInstance().getStdFileType("Type:" + fileTypeExtension));
+        //    PsiFile psiFile;
+        //    psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1],
+        //            FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+        //    PsiManager.getInstance(project).findDirectory(currentDirectory).add(psiFile);
+        //    return psiFile;
+        //});
     }
 
     public static String toRelPath(String fullPath) {
