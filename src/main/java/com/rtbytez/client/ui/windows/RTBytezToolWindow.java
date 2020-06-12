@@ -11,6 +11,7 @@ import com.rtbytez.client.actions.RoomIDGetter;
 import com.rtbytez.client.ui.util.TreeController;
 import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestCreate;
 import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestJoin;
+import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestLeave;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -169,8 +170,27 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
+                if (RTBytezClient.getInstance().getPeer().isConnected()) {
+                    String roomID = RTBytezClient.getInstance().getPeer().getPeerData().getRoomId();
+                    if (!roomID.equals("")) {
+                        treeController.updateRoomID(roomID);
+                    }
+                }
                 e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() &&
                         RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
+            }
+        };
+        AnAction leaveRoomButton = new AnAction("Leave Room", "Leave the room", AllIcons.General.Remove) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestLeave("room"));
+                treeController.updateRoomID("");
+            }
+
+            @Override
+            public void update(@NotNull AnActionEvent e) {
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() &&
+                        !RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
             }
         };
         AnAction serverManagerButton = new AnAction("Server Manager", "Server manager", AllIcons.Actions.Lightning) {
@@ -187,7 +207,7 @@ public class RTBytezToolWindow {
         Separator separator = new Separator();
         ActionGroup finalGroup = new DefaultActionGroup(
                 connectButton, disconnectButton, refreshButton, separator, createRoomButton, joinRoomButton,
-                separator, membersButton, filesButton, commitButton, pushButton, conflictsButton,
+                leaveRoomButton, separator, membersButton, filesButton, commitButton, pushButton, conflictsButton,
                 separator, serverManagerButton
         );
         ActionManager actionManager = ActionManager.getInstance();
@@ -199,5 +219,6 @@ public class RTBytezToolWindow {
     private void createTree() {
         rTBytezTree.getModel();
     }
+
 }
 
