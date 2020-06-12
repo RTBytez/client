@@ -68,6 +68,16 @@ public class TreeController {
         }
     }
 
+    public void updateRoomID(String roomID) {
+        if (root.getChildCount() > 2) {
+            root.remove(2);
+        }
+        if (!roomID.equals("")) {
+            root.add(new DefaultMutableTreeNode(new CustomTreeNode("Room ID: " + roomID, AllIcons.General.Note)));
+        }
+        treeModel.reload();
+    }
+
     public void deleteFile(String filename) {
         DefaultMutableTreeNode curNode;
         for (int i = 0; i < files.getChildCount(); i++) {

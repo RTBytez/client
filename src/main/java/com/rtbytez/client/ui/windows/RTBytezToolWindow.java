@@ -170,6 +170,12 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
+                if (RTBytezClient.getInstance().getPeer().isConnected()) {
+                    String roomID = RTBytezClient.getInstance().getPeer().getPeerData().getRoomId();
+                    if (!roomID.equals("")) {
+                        treeController.updateRoomID(roomID);
+                    }
+                }
                 e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() &&
                         RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
             }
@@ -177,8 +183,8 @@ public class RTBytezToolWindow {
         AnAction leaveRoomButton = new AnAction("Leave Room", "Leave the room", AllIcons.General.Remove) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                System.out.println("Run!");
                 RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestLeave("room"));
+                treeController.updateRoomID("");
             }
 
             @Override
@@ -213,5 +219,6 @@ public class RTBytezToolWindow {
     private void createTree() {
         rTBytezTree.getModel();
     }
+
 }
 

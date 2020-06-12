@@ -19,6 +19,7 @@ public class RoomEventHandler extends PacketEventHandler {
             ApplicationManager.getApplication().invokeLater(() -> {
                 RoomCreateGetter roomCreateGetter = new RoomCreateGetter();
                 roomCreateGetter.showRoomID(rtpRoomJoined.getRoomId());
+
             });
         }
         if (packet instanceof RTPRoomLeave) {
