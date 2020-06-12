@@ -164,7 +164,7 @@ public class RTBytezToolWindow {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 RoomIDGetter roomIDGetter = new RoomIDGetter();
-                RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("Room", roomIDGetter.retrieveRoomID(), ""));
+                RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("room", roomIDGetter.retrieveRoomID(), ""));
             }
 
             @Override
