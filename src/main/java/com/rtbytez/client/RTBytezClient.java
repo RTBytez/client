@@ -12,6 +12,8 @@ import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestJoin;
 import com.rtbytez.common.util.Console;
 
+import java.util.Arrays;
+
 public class RTBytezClient {
 
     private static RTBytezClient instance = null;
