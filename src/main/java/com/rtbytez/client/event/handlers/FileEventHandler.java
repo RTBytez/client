@@ -9,6 +9,7 @@ import com.rtbytez.client.util.Functions;
 import com.rtbytez.common.comms.bundles.LineBundle;
 import com.rtbytez.common.comms.packets.RTPacket;
 import com.rtbytez.common.comms.packets.file.broadcasts.RTPFileAddLine;
+import com.rtbytez.common.comms.packets.file.broadcasts.RTPFileCreate;
 import com.rtbytez.common.comms.packets.file.broadcasts.RTPFileModifyLine;
 import com.rtbytez.common.comms.packets.file.broadcasts.RTPFileRemoveLine;
 import com.rtbytez.common.comms.packets.file.request.RTPFileRequestRetrieve;
@@ -70,6 +71,11 @@ public class FileEventHandler extends PacketEventHandler {
                 addLine(rtpFileRetrieve.getFilePath(), line.getLineNumber() - 1, line.getText());
             }
             return;
+        }
+
+        if (packet instanceof RTPFileCreate) {
+            RTPFileCreate rtpFileCreate = (RTPFileCreate) packet;
+            psiFileFromString(rtpFileCreate.getFilePath());
         }
     }
 }
