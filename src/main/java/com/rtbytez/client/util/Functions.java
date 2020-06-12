@@ -112,10 +112,17 @@ public class Functions {
             } else {
                 offset = document.getLineEndOffset(afterLineNumber - 1);
             }
+
+            final String prefix;
+            if (offset != 0) {
+                prefix = "\n";
+            } else {
+                prefix = "";
+            }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
-                document.replaceString(offset, offset, "\n" + text, l, false);
+                document.replaceString(offset, offset, prefix + text, l, false);
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {

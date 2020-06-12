@@ -48,6 +48,7 @@ public class RTBytezClient {
             RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("room", "000000", ""));
             Functions.psiFileFromString("foo.bar.txt");
             //RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("room", "262764f", ""));
+
         } catch (Exception e) {
             e.printStackTrace();
         }

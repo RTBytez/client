@@ -1,7 +1,6 @@
 package com.rtbytez.client.event.handlers;
 
 import com.intellij.openapi.editor.Document;
-import com.intellij.psi.PsiFile;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.client.event.PacketEventHandler;
 import com.rtbytez.client.socket.Peer;
@@ -64,7 +63,7 @@ public class FileEventHandler extends PacketEventHandler {
 
         if (packet instanceof RTPFileRetrieve) {
             RTPFileRetrieve rtpFileRetrieve = (RTPFileRetrieve) packet;
-            PsiFile psiFile = Functions.psiFileFromString(rtpFileRetrieve.getFilePath());
+            Functions.psiFileFromString(rtpFileRetrieve.getFilePath());
             wipeFile(rtpFileRetrieve.getFilePath());
             for (LineBundle line : rtpFileRetrieve.getLines()) {
                 client.getLineMapper().addLine(rtpFileRetrieve.getFilePath(), line.getLineId(), line.getLineNumber());
