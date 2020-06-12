@@ -7,7 +7,10 @@ import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.rtbytez.client.ConnectSanitizedInput;
 import com.rtbytez.client.RTBytezClient;
 import com.rtbytez.client.actions.ConnectDetailsGetter;
+import com.rtbytez.client.actions.RoomIDGetter;
 import com.rtbytez.client.ui.util.TreeController;
+import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestCreate;
+import com.rtbytez.common.comms.packets.room.request.RTPRoomRequestJoin;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -148,12 +151,24 @@ public class RTBytezToolWindow {
         AnAction createRoomButton = new AnAction("Create Room", "Create room", AllIcons.General.Add) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-
+                RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestCreate("room"));
             }
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected());
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() && RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
+            }
+        };
+        AnAction joinRoomButton = new AnAction("Join Room", "Join a room", AllIcons.General.Locate) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                RoomIDGetter roomIDGetter = new RoomIDGetter();
+                RTBytezClient.getInstance().getPeer().emit(new RTPRoomRequestJoin("Room", roomIDGetter.retrieveRoomID(), ""));
+            }
+
+            @Override
+            public void update(@NotNull AnActionEvent e) {
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() && RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
             }
         };
         AnAction serverManagerButton = new AnAction("Server Manager", "Server manager", AllIcons.Actions.Lightning) {
@@ -169,7 +184,7 @@ public class RTBytezToolWindow {
 
         Separator separator = new Separator();
         ActionGroup finalGroup = new DefaultActionGroup(
-                connectButton, disconnectButton, refreshButton, separator, createRoomButton,
+                connectButton, disconnectButton, refreshButton, separator, createRoomButton, joinRoomButton,
                 separator, membersButton, filesButton, commitButton, pushButton, conflictsButton,
                 separator, serverManagerButton
         );
