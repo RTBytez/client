@@ -7,13 +7,13 @@ import java.util.List;
 
 public class PeerData {
 
-    String serverInstanceId;
-    String username;
-    String secret;
+    String serverInstanceId = "";
+    String username = "";
+    String secret = "";
     int userId;
     ServerRole serverRole;
 
-    String roomId;
+    String roomId = "";
     List<PeerObject> roomMembers = new ArrayList<>();
 
     public String getServerInstanceId() {

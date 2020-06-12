@@ -156,7 +156,8 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() && RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() &&
+                        RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
             }
         };
         AnAction joinRoomButton = new AnAction("Join Room", "Join a room", AllIcons.General.Locate) {
@@ -168,7 +169,8 @@ public class RTBytezToolWindow {
 
             @Override
             public void update(@NotNull AnActionEvent e) {
-                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() && RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
+                e.getPresentation().setVisible(RTBytezClient.getInstance().getPeer().isConnected() &&
+                        RTBytezClient.getInstance().getPeer().getPeerData().getRoomId().equals(""));
             }
         };
         AnAction serverManagerButton = new AnAction("Server Manager", "Server manager", AllIcons.Actions.Lightning) {

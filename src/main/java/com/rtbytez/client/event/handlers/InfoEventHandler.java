@@ -29,7 +29,7 @@ public class InfoEventHandler extends PacketEventHandler {
 
         if (packet instanceof RTPInfoServerInstanceId) {
             RTPInfoServerInstanceId rtpInfoServerInstanceId = (RTPInfoServerInstanceId) packet;
-            if (peer.getPeerData().getServerInstanceId() == null) {
+            if (peer.getPeerData().getServerInstanceId() == null || peer.getPeerData().getServerInstanceId().equals("")) {
                 peer.getPeerData().setServerInstanceId(rtpInfoServerInstanceId.getServerInstanceId());
             } else {
                 if (!peer.getPeerData().getServerInstanceId().equals(rtpInfoServerInstanceId.getServerInstanceId())) {
