@@ -12,14 +12,18 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.intellij.util.LocalTimeCounter;
 import com.rtbytez.client.RTBytezClient;
+import com.rtbytez.common.comms.packets.file.request.RTPFileRequestRetrieve;
 import com.rtbytez.common.util.Console;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Functions {
@@ -34,7 +38,8 @@ public class Functions {
     }
 
     public static PsiFile getPsiFile(VirtualFile virtualFile) {
-        return ApplicationManager.getApplication().runReadAction((Computable<PsiFile>) () -> PsiManager.getInstance(RTBytezClient.getInstance().getProject()).findFile(virtualFile));
+        return ApplicationManager.getApplication().runReadAction((Computable<PsiFile>) () ->
+                PsiManager.getInstance(RTBytezClient.getInstance().getProject()).findFile(virtualFile));
     }
 
     public static DocumentImpl getDocument(String path) {
@@ -52,8 +57,17 @@ public class Functions {
         RTBytezClient client = RTBytezClient.getInstance();
         DocumentImpl document = getDocument(path);
         if (document != null) {
-            int lineStartOffset = document.getLineStartOffset(lineNumber - 1);
-            int lineEndOffset = document.getLineEndOffset(lineNumber - 1);
+            int lineStartOffset;
+            int lineEndOffset;
+            try {
+                lineStartOffset = document.getLineStartOffset(lineNumber - 1);
+                lineEndOffset = document.getLineEndOffset(lineNumber - 1);
+            } catch (Exception e) {
+                Console.log("DOCUMENT_EDITOR", "File " + path +
+                        " is clearly not up-to-date with server... creating desync request.");
+                RTBytezClient.getInstance().getPeer().emit(new RTPFileRequestRetrieve("file", path));
+                return;
+            }
             WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
                 long l = LocalTimeCounter.currentTime();
                 client.getFileModTracker().addCache(path, l);
@@ -61,24 +75,55 @@ public class Functions {
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
-            Console.log("DOCUMENT_EDITOR", "Couldn't run a replacement because we couldn't find the file: " + path);
+            Console.log("DOCUMENT_EDITOR",
+                    "Couldn't run a replacement because we couldn't find the file: " + path);
+        }
+    }
+
+    public static void wipeFile(String path) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        DocumentImpl document = getDocument(path);
+        if (document != null) {
+            if (document.getLineCount() == 0) {
+                return;
+            }
+            WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
+                long l = LocalTimeCounter.currentTime();
+                client.getFileModTracker().addCache(path, l);
+                document.replaceString(0, document.getLineEndOffset(document.getLineCount() - 1),
+                        "", l, true);
+                PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
+            });
+        } else {
+            Console.log("DOCUMENT_EDITOR", "Couldn't wipe file because we couldn't find the file: "
+                    + path);
+        }
+    }
+
+    public static void addLine(String path, int afterLineNumber, String text) {
+        RTBytezClient client = RTBytezClient.getInstance();
+        DocumentImpl document = getDocument(path);
+        if (document != null) {
+            int offset;
+            if (afterLineNumber == 0 || document.getLineCount() == 0) {
+                offset = 0;
+            } else {
+                offset = document.getLineEndOffset(afterLineNumber);
+            }
+            WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
+                long l = LocalTimeCounter.currentTime();
+                client.getFileModTracker().addCache(path, l);
+                document.replaceString(offset, offset, "\n" + text, l, false);
+                PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
+            });
+        } else {
+            Console.log("DOCUMENT_EDITOR", "Couldn't add a line because we couldn't find the file: "
+                    + path);
         }
     }
 
     public static void addLine(String path, int afterLineNumber) {
-        RTBytezClient client = RTBytezClient.getInstance();
-        DocumentImpl document = getDocument(path);
-        if (document != null) {
-            int offset = document.getLineEndOffset(afterLineNumber);
-            WriteCommandAction.runWriteCommandAction(client.getProject(), () -> {
-                long l = LocalTimeCounter.currentTime();
-                client.getFileModTracker().addCache(path, l);
-                document.replaceString(offset, offset, "\n", l, false);
-                PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
-            });
-        } else {
-            Console.log("DOCUMENT_EDITOR", "Couldn't add a line because we couldn't find the file: " + path);
-        }
+        addLine(path, afterLineNumber, "");
     }
 
     public static void removeLine(String path, int lineNumber) {
@@ -94,27 +139,49 @@ public class Functions {
                 PsiDocumentManager.getInstance(client.getProject()).commitDocument(document);
             });
         } else {
-            Console.log("DOCUMENT_EDITOR", "Couldn't remove a line because we couldn't find the file: " + path);
+            Console.log("DOCUMENT_EDITOR", "Couldn't remove a line because we couldn't find the file: "
+                    + path);
         }
     }
 
-    public static PsiFile psiFileFromString(String fileName) {
-        Project project = RTBytezClient.getInstance().getProject();
-        VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
-        String regexString = "/|" + Pattern.quote(".");
-        String[] splitFileName = fileName.split(regexString);
-        String fileTypeExtension = splitFileName[splitFileName.length - 1];
-        for (int i = 0; i < splitFileName.length - 2; i++) {
-            try {
-                currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public static PsiFile psiFileFromString(String path) {
+        VirtualFile file = getVirtualFile(path);
+        if (file != null) {
+            return getPsiFile(file);
         }
-        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-        PsiFile psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 2], FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
-        PsiDirectoryFactory.getInstance(project).createDirectory(currentDirectory).add(psiFile);
-        return psiFile;
+        Project project = RTBytezClient.getInstance().getProject();
+        return ApplicationManager.getApplication().runWriteAction((Computable<PsiFile>) () -> {
+            VirtualFile currentDirectory = ProjectRootManager.getInstance(project).getContentRoots()[0];
+            String regexString = "/";
+            String[] splitFileName = path.split(regexString);
+            String fileTypeExtension = splitFileName[splitFileName.length - 1].split(Pattern.quote("."))[1];
+            for (int i = 0; i < splitFileName.length - 1; i++) {
+                try {
+                    ArrayList<String> fileNames = new ArrayList<>();
+                    for (VirtualFile v : currentDirectory.getChildren()) {
+                        fileNames.add(v.getName());
+                    }
+                    if (!fileNames.contains(splitFileName[i])) {
+                        currentDirectory = currentDirectory.createChildDirectory(null, splitFileName[i]);
+                    } else {
+                        for (VirtualFile v : currentDirectory.getChildren()) {
+                            if (splitFileName[i].equals(v.getName())) {
+                                currentDirectory = v;
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+            System.out.println(FileTypeManager.getInstance().getStdFileType("Type:" + fileTypeExtension));
+            PsiFile psiFile;
+            psiFile = psiFileFactory.createFileFromText(splitFileName[splitFileName.length - 1],
+                    FileTypeManager.getInstance().getStdFileType(fileTypeExtension), "");
+            PsiManager.getInstance(project).findDirectory(currentDirectory).add(psiFile);
+            return psiFile;
+        });
     }
 
     public static String toRelPath(String fullPath) {
@@ -133,6 +200,85 @@ public class Functions {
         }
         return true;
     }
+
+    public static String[] getFilePaths() {
+        ArrayList<String> filePaths = new ArrayList<>();
+        ArrayList<String> ignoredFiles = new ArrayList<>();
+        Set<VirtualFile> filesInProject = getFilesInProject();
+        for (VirtualFile v : filesInProject) {
+            if (v.getName().equals(".gitignore")) {
+                try {
+                    String path = toRelPath(v.getPath().substring(0, v.getPath().length() - 11));
+                    String ignoredFilesString = new String(v.contentsToByteArray());
+                    for (String s : ignoredFilesString.split("\r\n")) {
+                        if (s.charAt(0) == '/') {
+                            ignoredFiles.add(path + s);
+                        } else {
+                            ignoredFiles.add(s);
+                        }
+                    }
+                } catch (IOException e) {
+                    System.out.println("oof");
+                }
+            }
+
+            filePaths.add(toRelPath(v.getPath()));
+        }
+        for (VirtualFile v : filesInProject) {
+            String s = toRelPath(v.getPath());
+            if (ignoredFiles.contains(s) || ignoredFiles.contains(v.getName())) {
+                filePaths.remove(s);
+                System.out.println("Removed " + v.getName() + "!");
+            }
+            for (String filePath : ignoredFiles) {
+                if (filePaths.contains(filePath)) {
+                    filePaths.remove(filePath);
+                } else if (filePath.contains("**")) {
+                    String[] startAndEnd = filePath.split(Pattern.quote("**"));
+                    String start = startAndEnd[0];
+                    String end = startAndEnd[1];
+                    filePaths.removeIf(file -> file.contains(start) && file.contains(end));
+                } else if (filePath.contains("*.")) {
+                    String[] startAndEnd = filePath.split(Pattern.quote("*"));
+                    String start = startAndEnd[0];
+                    String end = startAndEnd[1];
+                    filePaths.removeIf(file -> file.contains(start) && file.contains(end));
+                } else if (filePath.contains(".*")) {
+                    String[] startAndEnd = filePath.split(Pattern.quote("."));
+                    String start = startAndEnd[0];
+                    String end = startAndEnd[1];
+                    filePaths.removeIf(file -> file.contains(start) && file.contains(end));
+                }
+            }
+
+        }
+        String[] filePathsArray = new String[filePaths.size()];
+        for (int i = 0; i < filePaths.size(); i++) {
+            filePathsArray[i] = filePaths.get(i);
+        }
+        return filePathsArray;
+    }
+
+    public static Set<VirtualFile> getFilesInProject() {
+        Set<VirtualFile> virtualFiles = new HashSet<>();
+        Project project = RTBytezClient.getInstance().getProject();
+        String basepath = ProjectRootManager.getInstance(project).getContentRoots()[0].getCanonicalPath() + "/";
+        VirtualFile virtualFile = getVirtualFile(toRelPath(basepath));
+        ArrayList<VirtualFile> toBeScanned = new ArrayList<>(Arrays.asList(virtualFile.getChildren()));
+        while (toBeScanned.size() != 0) {
+            VirtualFile v = toBeScanned.get(0);
+            if (v.getChildren().length == 0) {
+                virtualFiles.add(v);
+                toBeScanned.remove(v);
+            } else {
+                toBeScanned.addAll(Arrays.asList(v.getChildren()));
+                toBeScanned.remove(v);
+            }
+
+        }
+        return virtualFiles;
+    }
+
 
     public static void safeSleep(long millis) {
         try {
